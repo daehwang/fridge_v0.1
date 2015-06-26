@@ -139,7 +139,6 @@ public class RecipeServiceImpl implements RecipeService{
 	@Override
 	public String getItemTag(int recipeNo) {
 		List<String> itemNoList=recipeDAO.getItemNoList(recipeNo);
-		System.out.println(itemNoList);
 		String tag="";
 		for(int i=0;i<itemNoList.size();i++){
 			int itemNo=Integer.parseInt(itemNoList.get(i));

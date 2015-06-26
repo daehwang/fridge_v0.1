@@ -60,7 +60,7 @@ public class RecipeController {
 	 * @return
 	 */
 	@RequestMapping("home.do")
-	public ModelAndView home(String pageNo) {
+	public ModelAndView home() {
 		List<String> recipeNoList = recipeService.getAllRecipeNo();
 		 List<HashMap<String,Object>> fileLastNamePath = new ArrayList<HashMap<String,Object>>();
 		for (int i = 0; i < recipeNoList.size(); i++) {
@@ -222,7 +222,6 @@ public class RecipeController {
 	@RequestMapping("deleteRecipe.do")
 	@Transactional
 	public ModelAndView deleteForm(RecipeVO rvo, HttpSession session) {
-		String pageNo = "";
 		MemberVO mvo = (MemberVO) session.getAttribute("mvo");
 		String id = mvo.getId();
 		List<String> list = recipeService.getFileName(rvo.getRecipeNo());
@@ -236,7 +235,7 @@ public class RecipeController {
 			}
 		}
 		recipeService.deleteRecipeAll(rvo.getRecipeNo());
-		return home(pageNo);
+		return home();
 	}
 	/**
 	 * 
@@ -352,7 +351,6 @@ public class RecipeController {
 	   @Transactional
 	   public ModelAndView updateRecipe(RecipeVO rvo,String items){
 	       List<String> list = convertHtmlimg(rvo.getContents());
-	       String pageNo = null;
 	       recipeService.updateRecipe(rvo);  
 	       List<FileVO> fvoList=new ArrayList<FileVO>();
 			for (String imgUrl : list) {
@@ -364,7 +362,7 @@ public class RecipeController {
 			}
 			recipeService.insertRecipeItem(rvo,items);
 			recipeService.insertRecipeFile(rvo, fvoList);  
-	      return home(pageNo);
+	      return home();
 	   }
 	   
 		@RequestMapping("{viewId}.do")

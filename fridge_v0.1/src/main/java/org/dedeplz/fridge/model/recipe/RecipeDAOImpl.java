@@ -83,8 +83,7 @@ public class RecipeDAOImpl implements RecipeDAO {
 	 */
 	@Override
 	public List<String> getItemNoList(int recipeNo) {
-		return sqlSessionTemplate.selectList("recipe.getRecipeItemList",
-				recipeNo);
+		return sqlSessionTemplate.selectList("recipe.getItemNoList",recipeNo);
 	}
 
 	/**
