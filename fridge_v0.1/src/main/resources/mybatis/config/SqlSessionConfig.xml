@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<!-- MyBatis  DataSource에 대한 설정 및  SQL 정의 xml 에 대한 매핑
+		spring과 연동시에는 spring 설정에서 DataSource(dbcp) 를 정의한다. 
+-->
+<configuration>	
+	<!-- 사용할 클래스에 대한 별칭을 명시한다.  -->
+	<typeAliases>
+		<typeAlias type="org.dedeplz.fridge.model.member.MemberVO" alias="mvo"/>	
+		<typeAlias type="org.dedeplz.fridge.model.recipe.ItemVO" alias="ivo"/>
+		<typeAlias type="org.dedeplz.fridge.model.recipe.RecipeItemVO" alias="rivo"/>
+		<typeAlias type="org.dedeplz.fridge.model.recipe.RecipeVO" alias="rvo"/>	
+		<typeAlias type="org.dedeplz.fridge.model.recipe.FileVO" alias="fvo"/>		
+		<typeAlias type="org.dedeplz.fridge.model.recipe.FavoriteVO" alias="rfvo"/>
+	</typeAliases>	
+    <!-- sql mapping config xml 을 연결 -->
+	<mappers>
+		<mapper resource="mybatis/config/member.xml"/>	
+		<mapper resource="mybatis/config/recipe.xml"/>
+		<mapper resource="mybatis/config/recipeFile.xml"/>	
+	</mappers>
+</configuration>
+
+
+
+
+
+
+
+
+
+

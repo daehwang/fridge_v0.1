@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Sql Mapper -->
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="recipe">
+   <resultMap type="rvo" id="recipeListRM">
+		<result property="recipeNo" column="recipe_no" />			
+		<result property="postDate" column="post_date" /> 
+		<result property="cookingTime" column="cooking_time"/> 
+		<result property="memberId" column="member_id"/>
+	</resultMap>
+   <resultMap type="ivo" id="ItemRM">
+		<result property="itemNo" column="item_no" />			
+		<result property="itemName" column="item_name" /> 
+	</resultMap>
+	
+	<resultMap type="rfvo" id="favoritesRM">      
+      <result property="favoriteNo" column="favorites_no" /> 
+      <result property="memberId" column="member_id" />   
+      <result property="recipeNo" column="recipe_no" />
+      <result property="recipeTitle" column="recipe_title" />
+      <result property="insertDate" column="insert_date" />   
+   </resultMap>
+	
+	 <select id="getRecipeList" resultMap="recipeListRM" >
+	select recipe_no,title,contents,post_date,nick,cooking_time,hits,member_id from (select recipe_no,title,contents,post_date,nick,cooking_time,hits,member_id,ceil(rownum/5) as page from(select recipe_no,title,contents,to_char(post_date,'YYYY.MM.DD') as post_date,nick,cooking_time,hits,member_id from recipe order by recipe_no desc)) where page=#{value}
+   </select>
+   <select id="totalContent" resultType="int">
+		select count(*) from recipe
+	</select>
+  <insert id="insertRecipeItem" parameterType="rivo">
+    <selectKey keyProperty="foodReserves" resultType="int" order="BEFORE">
+		select food_reserves_seq.nextval from dual
+	</selectKey>  
+    insert into recipe_item (food_reserves,item_no,recipe_no) values (#{foodReserves},#{itemNo},#{recipeNo})
+   </insert> 
+  <insert id="insertItem" >
+    insert into item (item_no,item_name) values (item_no_seq.nextval,#{value}) 
+   </insert>
+
+ <select id="showRecipe" resultMap="recipeListRM"> 
+   select * from recipe where recipe_no=#{value}
+   </select> 
+    <select id="getCountItemNo" resultType="int">
+   select count(item_no) from item where item_name=#{value}
+   </select>
+ <select id="getItemNo" resultType="int">
+   select item_no from item where item_name=#{value}
+   </select>
+ <insert id="registerRecipe" parameterType="rvo">
+ 	 <selectKey keyProperty="recipeNo" resultType="int" order="BEFORE">
+ 		select recipe_seq.nextval from dual
+	</selectKey>
+ 	insert into recipe (recipe_no,title,contents,post_date,nick,cooking_time,hits,member_id)
+ 	values(#{recipeNo},#{title},#{contents},sysdate,#{nick},#{cookingTime},0,#{memberId})
+ 	</insert>
+ 	
+ 	<select id="getRecipeItemList" resultType="string">
+ 		select item_no from recipe_item where recipe_no=#{value}
+ 	</select> 
+	<select id="getItemNameByItemNo" resultType="string">
+ 		select item_name from item where item_no=#{value}
+ 	</select> 
+ 	<!-- delete -->
+ 	
+ 	 <delete id="deleteRecipe">
+ 		delete recipe where recipe_no=#{value}
+ 	</delete> 
+ 	<delete id="deleteRecipeItem" >
+      delete recipe_item where recipe_no = #{value}
+   </delete>
+   <select id="getAllRecipeNo" resultType="string">
+   		select recipe_no from recipe
+   </select>
+  <update id="updateRecipe" parameterType="rvo" >
+      update recipe set title=#{title},contents=#{contents},cooking_time=#{cookingTime} where recipe_no=#{recipeNo}
+   </update>
+   <select id="getRecipeNoByItem" resultType="String">
+   		select r.recipe_no from recipe r,  (select recipe_no from recipe_item
+		where item_no=(select item_no from item where item_name=#{value})) t 
+		where r.recipe_no=t.recipe_no
+   </select>
+   <select id="getGoodAndBadNoCountByRecipeNo" resultType="int">
+   		select count(gnb_no) from good_n_bad where recipe_no=#{value}
+   </select>
+   <select id="getGood" parameterType="map" resultType="int">
+   		select good from good_n_bad where recipe_no=#{recipeNo} and member_id=#{memberId}
+   </select>
+   <select id="getBad" parameterType="map" resultType="int">
+   		select bad from good_n_bad where recipe_no=#{recipeNo} and member_id=#{memberId}
+   </select>
+   <select id="getGoodAndBadNoCountByRecipeNoAndMemberId" parameterType="map" resultType="int">
+   		select count(gnb_no) from good_n_bad where recipe_no=#{recipeNo} and member_id=#{memberId}
+   </select>
+   <insert id="insertGood" parameterType="map">
+	<selectKey keyProperty="gnbNo" resultType="int" order="BEFORE">
+   		select gnb_no_seq.nextval from dual
+   </selectKey> 
+   		insert into good_n_bad(gnb_no,good,bad,recipe_no,member_id) values(#{gnbNo},1,0,#{recipeNo},#{memberId})
+   </insert>
+   <update id="updateCancleGood" parameterType="map">
+   		update good_n_bad set good=0 where recipe_no=#{recipeNo} and member_id=#{memberId}
+   </update>
+   <update id="updateUpGood" parameterType="map">
+   		update good_n_bad set good=1,bad=0 where recipe_no=#{recipeNo} and member_id=#{memberId}
+   </update>
+   <insert id="insertBad" parameterType="map">
+	<selectKey keyProperty="gnbNo" resultType="int" order="BEFORE">
+   		select gnb_no_seq.nextval from dual
+   </selectKey> 
+   		insert into good_n_bad(gnb_no,good,bad,recipe_no,member_id) values(#{gnbNo},0,1,#{recipeNo},#{memberId})
+   </insert>
+   <update id="updateCancleBad" parameterType="map">
+   		update good_n_bad set bad=0 where recipe_no=#{recipeNo} and member_id=#{memberId}
+   </update>
+   <update id="updateUpBad" parameterType="map">
+   		update good_n_bad set good=0,bad=1 where recipe_no=#{recipeNo} and member_id=#{memberId}
+   </update>
+   <delete id="deleteGoodAndBad">
+   		delete from good_n_bad where recipe_no=#{value}
+   </delete>
+   
+   <insert id="registerFavorite" parameterType="rfvo">
+         insert into favorites(favorites_no, member_id, recipe_no, insert_date)
+      values(favorites_no_seq.nextval, #{memberId}, #{recipeNo}, sysdate)
+   </insert>
+   <select id="getFavoriteRecipeList" resultMap="favoritesRM" parameterType="hashMap">
+         select f.favorites_no, f.member_id, f.recipe_no, f.insert_date, r.title as recipe_title from(
+         select favorites_no, member_id, recipe_no, insert_date, ceil(rownum/10) as page from(
+            select favorites_no, member_id, recipe_no, insert_date from favorites order by insert_date desc)
+      )f, recipe r
+      where f.member_id = #{id}  and f.recipe_no = r.recipe_no and page = #{pageNo}
+      
+   </select>
+   
+   <delete id="deleteFavorite" parameterType="rfvo">
+         delete from favorites
+      where recipe_no = #{recipeNo} and member_id = #{memberId}
+      
+   </delete>
+   
+   <select id="findRecipeNoById" resultType="int">
+         select recipe_no
+      from favorites
+      where member_id = #{value}
+   </select>
+    <update id="updateHitsByRecipeNo" >
+      update recipe set hits=hits+1 where recipe_no=#{recipeNo}
+   </update>
+   <select id="getTotalGood" resultType="int">
+   		select count(good) from good_n_bad where recipe_no=#{value} and good=1
+   </select>
+    <select id="getTotalBad" resultType="int">
+   		select count(bad) from good_n_bad where recipe_no=#{value} and bad=1
+   </select>
+</mapper>
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
