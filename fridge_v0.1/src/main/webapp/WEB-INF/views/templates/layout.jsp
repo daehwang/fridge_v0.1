@@ -481,33 +481,62 @@
 
             });
             
-            //삭제 버튼 클릭
-            $("#delBtn").click(function(){
-               /* alert($("input:checkbox[name=chkBox]:checked").val()); */
-               $("input:checkbox[name=chkBox]:checked").each(function(){
-                  
-                  var no=$(this).val();
-                  alert(no);
-                  $.ajax({
-                     type:"POST",
-                     url:"deleteFavorite.do",            
-                     data:"memberId=${sessionScope.mvo.id}&recipeNo=" + no,
-                     dataType:"json",   
-                     success:function(result){          
-                        var favoriteInfo = "";
-                        $.each(result.list,function(index,favorite){
-                           favoriteInfo += "<tr><td><input type='checkbox' id='chkBox' name='chkBox' value='" + favorite.recipeNo + "'</td>";
-                           favoriteInfo += "<td>" + (index + 1)+" </td>";
-                           favoriteInfo += "<td>" + favorite.recipeTitle + "</td></tr>";
-                        });
-                        $("#favoriteView").html(favoriteInfo);
-                     }
-                     });// ajax
-                    });//foreach 
-                    if($("input:checkbox[name=chkBox]:checked").val()==null){
-                       alert("삭제할 레시피를 선택해주세요!!!");
-                    }
-               });//click
+          //삭제 버튼 클릭
+			$("#delBtn").click(function(){
+				/* alert($("input:checkbox[name=chkBox]:checked").val()); */
+				$("input:checkbox[name=chkBox]:checked").each(function(){
+					
+					var no=$(this).val();
+					if(confirm("선택한 즐겨찾기 항목을 삭제하시겠습니까???")){
+						$.ajax({
+							type:"POST",
+							url:"deleteFavorite.do",				
+							data:"memberId=${sessionScope.mvo.id}&recipeNo=" + no,
+							dataType:"json",   
+							success:function(result){ 			
+								var favoriteInfo = "";
+								$.each(result.list,function(index,favorite){
+									favoriteInfo += "<tr><td><input type='checkbox' id='chkBox' name='chkBox' value='" + favorite.recipeNo + "'</td>";
+									favoriteInfo += "<td>" + (index + 1)+" </td>";
+									favoriteInfo += "<td>" + favorite.recipeTitle + "</td></tr>";
+								});
+								$("#favoriteView").html(favoriteInfo);
+								
+								
+							}
+						});// ajax
+					}
+					});//foreach 
+			
+					  
+					  if($("input:checkbox[name=chkBox]:checked").val()==null){
+						  alert("삭제할 레시피를 선택해주세요!!!");
+					  }
+				});//click
+				
+				$(document).on("click","#favoriteBtn",function(){
+					var recipeNo = $("#gnbUseRecipeNo").val();
+					if(confirm("즐겨찾기에 등록하시겠습니까?")){
+
+						$.ajax({
+							type:"POST",
+							url:"registerFavorite.do",				
+							data:"memberId=${sessionScope.mvo.id}&recipeNo=" + recipeNo,
+							success:function(result){ 
+								 if(result=="fail"){
+									alert("이미 등록한 즐겨찾기 입니다.");
+								}else{
+									var f = confirm("즐겨찾기 등록되었습니다. 즐겨찾기 페이지로  이동 하시겠습니까?");
+									if(f){
+										location.href="favoriteView.do";
+									}
+								}
+								
+								
+							}
+						});// ajax 
+					}
+	            });//즐겨찾기 클릭 이벤트
    });//ready
    //댓글 팝업
    $(document).on("click","#commentPopUp",function(){
@@ -532,7 +561,7 @@ function testAlert(path) {
         			+"<button type='button' id='totalBad' value='"+data.totalBad+"'>비추천"+data.totalBad+"</button><br><br>"
         			 +"<a button type='button' class='btn btn-success'   id='commentPopUp' >댓글달기</a>  "	
         			+"<input type='hidden' id='gnbUseRecipeNo' value='"+data.rvo.recipeNo+"'>"
-        			+"<input type='hidden' id='gnbUseMemberId' value='"+data.rvo.memberId+"'>"
+        			+"<input type='hidden' id='gnbUseMemberId' value='"+data.rvo.memberId+"'>"	
         );
         if("${sessionScope.mvo.id}"!=""&&data.rvo.memberId=="${sessionScope.mvo.id}"){
            $("#gogo").append("<a class='btn btn-danger' href='updateForm.do?recipeNo="+data.rvo.recipeNo+"'>수정하기</a>  "
@@ -540,12 +569,13 @@ function testAlert(path) {
                    +"<button type='button' class='btn btn-primary' data-dismiss='modal'>"
                   +"<i class='fa fa-times'></i> Close</button>");
         }else if("${sessionScope.mvo.id}"!=""&&data.rvo.memberId!="${sessionScope.mvo.id}"){
-           $("#gogo").append("<a class='btn btn-danger' id='favoriteBtn' href='registerFavorite.do?recipeNo="+data.rvo.recipeNo+"'>즐겨찾기</a>"
+           $("#gogo").append("<a class='btn btn-danger' id='favoriteBtn' >즐겨찾기</a>"
         		+"<button type='button' class='btn btn-primary' data-dismiss='modal'>"+"<i class='fa fa-times'></i> Close</button>"	);	   
         }
         }//callback         
      });//ajax 
-   		
+
+     
 }
 </script>
 

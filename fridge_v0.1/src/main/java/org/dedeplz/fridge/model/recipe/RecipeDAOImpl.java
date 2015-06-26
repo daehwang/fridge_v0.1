@@ -343,13 +343,25 @@ public class RecipeDAOImpl implements RecipeDAO {
 	       sqlSessionTemplate.update("recipe.updateHitsByRecipeNo", recipeNo);
 	   }
 
-	@Override
-	public int getTotalGood(int recipeNo) {
-		return sqlSessionTemplate.selectOne("recipe.getTotalGood",recipeNo);
-	}
-
-	@Override
-	public int getTotalBad(int recipeNo) {
-		return sqlSessionTemplate.selectOne("recipe.getTotalBad",recipeNo);
-	}
+	   /**
+	    * 레시피의 good값을 받아온다
+	    */
+	   @Override
+	   public int getTotalGood(int recipeNo) {
+	      return sqlSessionTemplate.selectOne("recipe.getTotalGood", recipeNo);
+	   }
+	   /**
+	    * 레시피의 bad값을 받아온다
+	    */
+	   @Override
+	   public int getTotalBad(int recipeNo) {
+	      return sqlSessionTemplate.selectOne("recipe.getTotalBad", recipeNo);
+	   }
+	   /**
+	    * id를 이용 해당 아이디의 모든 레시피 번호를 받아온다.
+	    */
+	   @Override
+	   public List<Integer> myRecipeList(String id) {
+	      return sqlSessionTemplate.selectList("recipe.myRecipeList", id);
+	   }
 }

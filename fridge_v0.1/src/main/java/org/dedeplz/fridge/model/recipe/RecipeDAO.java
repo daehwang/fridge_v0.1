@@ -47,4 +47,5 @@ public interface RecipeDAO {
 	public void updateHitsByRecipeNo(int recipeNo);
 	public int getTotalGood(int recipeNo);
 	public int getTotalBad(int recipeNo);
+	public List<Integer> myRecipeList(String id);
 }

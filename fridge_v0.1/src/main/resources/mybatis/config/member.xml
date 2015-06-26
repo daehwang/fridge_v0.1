@@ -79,15 +79,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<update id="levelChange" parameterType="mvo">
 		update member set member_level=#{level} where member_id=#{id}
 	</update>
-	<!-- 좋아요 수 count하기 -->
-	<select id="loveCount" parameterType="mvo" resultType="int">
-		select love from member where member_id=#{id} and password=#{password}
-	</select>
 	<!-- 회원 등급 자동 업그레이드 -->
 	<update id="updateMemberGrade" parameterType="mvo">
 		update member set member_level=member_level+1 where member_id=#{id} and
 		password=#{password}
 	</update>
+	<update id="updateMemberLove" parameterType="mvo">
+      update member set love=#{love} where member_id=#{id}
+   </update>
 </mapper>
  
  

@@ -154,6 +154,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="getTotalBad" resultType="int">
    		select count(bad) from good_n_bad where recipe_no=#{value} and bad=1
    </select>
+   <!-- 회원자신이 쓴 글 번호 가지고오기 -->
+   <select id="myRecipeList" resultType="int">
+      select recipe_no from recipe where member_id=#{value}
+   </select>
 </mapper>
 
  

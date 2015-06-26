@@ -111,6 +111,7 @@ public class RecipeController {
 	@RequestMapping("showRecipe.do")
 	@ResponseBody
 	public ModelAndView showContents(FileVO fvo,@CookieValue(value="memberCookie",required=false) String cookieValue,HttpServletResponse response) {
+		System.out.println("showRecipe");
 		RecipeVO rvo = null;
 		int recipeNo = recipeService.getRecipeNoByPath(fvo.getFilePath());
 		 if(cookieValue==null){//memberCookie cookie 존재하지 않으므로 cookie 생성하고 count 증가 (맨처음)
@@ -439,18 +440,24 @@ public class RecipeController {
 		/**
 		    * 레시피 즐겨찾기 등록
 		    */
-		   @RequestMapping("registerFavorite.do")
-		   public String registerFavorite(FavoriteVO fvo, HttpSession session, Model model, String pageNo){
-		      System.out.println("즐겨찾기 등록");
-		      System.out.println(fvo.getRecipeNo());
-		      MemberVO mvo = (MemberVO) session.getAttribute("mvo");
-		      if(mvo == null){
-		         return "home";
-		      }
-		      fvo.setMemberId(mvo.getId());
-		      recipeService.registerFavorite(fvo);
-		      return "redirect:favoriteView.do?pageNo" + pageNo;
-		   }
+		@RequestMapping(value="registerFavorite.do", method=RequestMethod.POST )
+		@ResponseBody
+		public Object registerFavorite(FavoriteVO fvo, HttpSession session){
+			System.out.println("즐겨찾기 등록");
+			
+			System.out.println(fvo.getRecipeNo());
+			MemberVO mvo = (MemberVO) session.getAttribute("mvo");
+			System.out.println(mvo);
+			if(mvo == null){
+				return "home";
+			}
+			fvo.setMemberId(mvo.getId());
+			System.out.println(fvo);
+			
+			String str = recipeService.registerFavorite(fvo);
+			System.out.println(str);
+			return str;
+		}
 		   /**
 		    * 즐겨찾기 리스트 검색
 		    * @param session

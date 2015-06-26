@@ -40,7 +40,7 @@ public interface RecipeService {
 	public void updateCancleBad(HashMap<String, Object> map);
 	public void updateUpBad(HashMap<String, Object> map);
 	
-	public void registerFavorite(FavoriteVO fvo);
+	public String registerFavorite(FavoriteVO fvo);
 	public FavoriteListVO getFavoriteRecipeList(String pageNo, String id);
 	public void deleteFavorite(FavoriteVO fvo);
 	

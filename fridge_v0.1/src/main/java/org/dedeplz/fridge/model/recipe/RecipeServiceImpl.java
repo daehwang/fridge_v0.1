@@ -368,12 +368,17 @@ public class RecipeServiceImpl implements RecipeService{
 	   /**
 	    * 로그인 한 사용자가 레시피를 즐겨찾기 등록
 	    */
-	   @Override
-	   public void registerFavorite(FavoriteVO fvo) {
-	      if(getRecipeNoById(fvo) == -1){
-	         recipeDAO.registerFavorite(fvo);
-	      }
-	   }
+		@Override
+		public String registerFavorite(FavoriteVO fvo) {
+			String str = "fail";
+			System.out.println("registerFavorites");
+			if(getRecipeNoById(fvo) == -1){
+				recipeDAO.registerFavorite(fvo);
+				str = "ok";
+				
+			}
+			return str;
+		}
 	   /**
 	    * recipeNo 중복 체크 
 	    */
