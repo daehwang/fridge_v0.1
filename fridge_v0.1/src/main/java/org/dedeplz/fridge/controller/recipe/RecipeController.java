@@ -268,7 +268,7 @@ public class RecipeController {
 			System.out.println("filename :" + oriName);
 			String filename_ext = oriName.substring(oriName.lastIndexOf(".") + 1);
 			filename_ext = filename_ext.toLowerCase();
-			String destPath = path + "\\" + mvo.getId() + "\\";
+			String destPath = path + mvo.getId() + "\\";
 			File file = new File(destPath);
 			if (!file.exists()) {
 				file.mkdirs();
