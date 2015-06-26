@@ -31,3 +31,6 @@ create table member(
    love number default 0
 )
 select count(good) from good_n_bad where recipe_no='74' and good=1;
+
+
+select * from favorites;

@@ -514,9 +514,31 @@
 					  }
 				});//click
 				
-				$(document).on("click","#favoriteBtn",function(){
+				/* 즐겨찾기 삭제 이벤트 */
+				$(document).on("click","#favoriteImg2",function(){
 					var recipeNo = $("#gnbUseRecipeNo").val();
-					if(confirm("즐겨찾기에 등록하시겠습니까?")){
+					
+
+						$.ajax({
+							type:"POST",
+							url:"deleteFavorite.do",				
+							data:"memberId=${sessionScope.mvo.id}&recipeNo=" + recipeNo,
+							success:function(result){ 
+								alert(result.list);
+									 var info = "<img src='${initParam.root}/img/star12345.png' id='favoriteImg1'></div>";
+										$("#favoriteView").html(info);
+								
+								
+								
+							}
+						});// ajax 
+					
+	            });
+	            
+	           /*  즐겨찾기 등록 */
+	            $(document).on("click","#favoriteImg1",function(){
+					var recipeNo = $("#gnbUseRecipeNo").val();
+					//if(confirm("즐겨찾기에 등록하시겠습니까?")){
 
 						$.ajax({
 							type:"POST",
@@ -524,19 +546,18 @@
 							data:"memberId=${sessionScope.mvo.id}&recipeNo=" + recipeNo,
 							success:function(result){ 
 								 if(result=="fail"){
-									alert("이미 등록한 즐겨찾기 입니다.");
+									 
 								}else{
-									var f = confirm("즐겨찾기 등록되었습니다. 즐겨찾기 페이지로  이동 하시겠습니까?");
-									if(f){
-										location.href="favoriteView.do";
-									}
+									 var info = "<img src='${initParam.root}/img/star123.png' id='favoriteImg2'></div>";
+										$("#favoriteView").html(info);
 								}
 								
 								
 							}
 						});// ajax 
-					}
+					//}
 	            });//즐겨찾기 클릭 이벤트
+	            
    });//ready
    //댓글 팝업
    $(document).on("click","#commentPopUp",function(){
@@ -569,8 +590,19 @@ function testAlert(path) {
                    +"<button type='button' class='btn btn-primary' data-dismiss='modal'>"
                   +"<i class='fa fa-times'></i> Close</button>");
         }else if("${sessionScope.mvo.id}"!=""&&data.rvo.memberId!="${sessionScope.mvo.id}"){
-           $("#gogo").append("<a class='btn btn-danger' id='favoriteBtn' >즐겨찾기</a>"
-        		+"<button type='button' class='btn btn-primary' data-dismiss='modal'>"+"<i class='fa fa-times'></i> Close</button>"	);	   
+
+        	if(data.favoriteInfo==0){
+	           $("#gogo").append(
+	        		"<button type='button' class='btn btn-primary' data-dismiss='modal'>"+"<i class='fa fa-times'></i> Close</button><br><br>"
+	        		+ "<div id='favoriteView'><img src='${initParam.root}/img/star12345.png' id='favoriteImg1'></div>"	
+	           );
+        	}else{
+        		  $("#gogo").append(
+      	        		"<button type='button' class='btn btn-primary' data-dismiss='modal'>"+"<i class='fa fa-times'></i> Close</button><br><br>"
+      	        		+ "<div id='favoriteView'><img src='${initParam.root}/img/star123.png' id='favoriteImg2'></div>"	
+      	           );
+        		
+        	}   
         }
         }//callback         
      });//ajax 

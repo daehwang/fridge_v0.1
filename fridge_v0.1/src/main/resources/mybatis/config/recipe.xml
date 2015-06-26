@@ -155,6 +155,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    <select id="getMyRecipeList" resultType="int">
       select recipe_no from recipe where member_id=#{value}
    </select>
+   <!-- 회원 아이디와 레시피 번호로 즐겨찾기 존재 유무 확인-->
+   <select id="getFavoriteRecipe" resultType="int" >
+   		select count(*)
+		from favorites
+		where member_id = #{memberId} and recipe_no = #{recipeNo}
+   </select>
 </mapper>
 
  

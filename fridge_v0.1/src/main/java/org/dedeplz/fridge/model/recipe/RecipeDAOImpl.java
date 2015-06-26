@@ -355,4 +355,9 @@ public class RecipeDAOImpl implements RecipeDAO {
 	   public List<Integer> getMyRecipeList(String id) {
 	      return sqlSessionTemplate.selectList("recipe.getMyRecipeList", id);
 	   }
+
+	@Override
+	public int getFavoriteRecipe(HashMap<String,Object> map) {
+		return sqlSessionTemplate.selectOne("recipe.getFavoriteRecipe", map);
+	}
 }

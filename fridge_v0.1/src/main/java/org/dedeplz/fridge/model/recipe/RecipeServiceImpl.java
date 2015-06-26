@@ -421,4 +421,9 @@ public class RecipeServiceImpl implements RecipeService{
 	      RecipeVO rvo=recipeDAO.getRecipeInfo(recipeNo);
 	      return rvo;
 	   }
+	@Override
+	public int getFavoriteRecipe(HashMap<String,Object> map) {
+		System.out.println(map);
+		return recipeDAO.getFavoriteRecipe(map);
+	}
 }

@@ -131,7 +131,6 @@ public class MemberServiceImpl implements MemberService {
     */
    @Override
    public int getTotalLove(String id) {
-	   System.out.println("id:"+id);
       List<Integer> list = recipeDAO.getMyRecipeList(id);
       int memberTotalGood = 0;
       int memberTotalBad = 0;
