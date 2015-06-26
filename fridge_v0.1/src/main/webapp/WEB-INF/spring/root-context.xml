@@ -50,7 +50,7 @@
 	<tx:annotation-driven transaction-manager="transactionManager" />
 	<bean id="uploadPath" class="java.lang.String">
 		<constructor-arg>
-			<value>C:\\java-kosta\\fridge-workspace\\fridge_v0.1\\src\\main\\webapp\\photo_upload\\</value>
+			<value>C:\\Users\\KOSTA\\git\\fridge_v0.1\\fridge_v0.1\\src\\main\\webapp\\photo_upload\\</value>
 		</constructor-arg>
 	</bean>	
 </beans>
