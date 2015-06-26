@@ -45,4 +45,5 @@ public interface RecipeService {
 	public void deleteFavorite(FavoriteVO fvo);
 	
 	public RecipeVO getRecipeInfoNoHits(int recipeNo);
+	public int getFavoriteRecipe(HashMap<String,Object> map);
 }

@@ -48,4 +48,5 @@ public interface RecipeDAO {
 	public int getTotalGood(int recipeNo);
 	public int getTotalBad(int recipeNo);
 	public List<Integer> myRecipeList(String id);
+	public int getFavoriteRecipe(HashMap<String,Object> map);
 }

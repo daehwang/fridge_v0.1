@@ -110,7 +110,7 @@ public class RecipeController {
 	 */
 	@RequestMapping("showRecipe.do")
 	@ResponseBody
-	public ModelAndView showContents(FileVO fvo,@CookieValue(value="memberCookie",required=false) String cookieValue,HttpServletResponse response) {
+	public ModelAndView showContents(FileVO fvo,@CookieValue(value="memberCookie",required=false) String cookieValue,HttpServletResponse response, HttpSession session) {
 		System.out.println("showRecipe");
 		RecipeVO rvo = null;
 		int recipeNo = recipeService.getRecipeNoByPath(fvo.getFilePath());
@@ -136,6 +136,15 @@ public class RecipeController {
 		map.put("memberId", rvo.getMemberId());
 		map.put("recipeNo", rvo.getRecipeNo());
 		Map<String, Object> resultMap = new HashMap<String, Object> ();
+		
+		HashMap<String,Object> favoriteMap=new HashMap<String, Object>();
+		MemberVO mvo = (MemberVO) session.getAttribute("mvo");
+		favoriteMap.put("memberId", mvo.getId());
+		favoriteMap.put("recipeNo", rvo.getRecipeNo());
+		int favoriteInfo = recipeService.getFavoriteRecipe(favoriteMap);
+		System.out.println(favoriteInfo);
+		
+		resultMap.put("favoriteInfo", favoriteInfo);
 		resultMap.put("rvo", rvo);
 		resultMap.put("tag",tag);
 		resultMap.put("allFilePath", allFilePath.toString());
