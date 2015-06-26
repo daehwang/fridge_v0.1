@@ -48,7 +48,7 @@
 		경로 C:\java-kosta\servers\spring2-tomcat\webapps\springmvc28-fileupload-inst\upload -->
 	<bean id="uploadPath" class="java.lang.String">
 		<constructor-arg>
-			<value>C:\\Users\\jslee\\git\\fridge_v0.1\\fridge_v0.1\\src\\main\\webapp\\photo_upload\\</value>
+			<value>C:\\Users\\KOSTA\\git\\fridge_v0.1\\fridge_v0.1\\src\\main\\webapp\\photo_upload\\</value>
 		</constructor-arg>
 	</bean>
 	<bean id="beanNameViewResolver"

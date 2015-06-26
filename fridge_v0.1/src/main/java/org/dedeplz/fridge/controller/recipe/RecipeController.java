@@ -66,7 +66,6 @@ public class RecipeController {
 		for (int i = 0; i < recipeNoList.size(); i++) {
 			String fileLastNo = recipeService.getFileLastNo(recipeNoList.get(i));
 			String fileLastPath = recipeService.getFileLastNamePath(fileLastNo);
-			 //RecipeVO rvo=recipeService.getRecipeInfo(Integer.parseInt(recipeNoList.get(i)));
 			 RecipeVO rvo=recipeService.getRecipeInfoNoHits(Integer.parseInt(recipeNoList.get(i)));
 			 String tag=recipeService.getItemTag(Integer.parseInt(recipeNoList.get(i)));
 			 HashMap<String, Object> map=new HashMap<String, Object>();
@@ -90,7 +89,6 @@ public class RecipeController {
 		for (int i = 0; i < recipeNoList.size(); i++) {
 			String fileLastNo = recipeService.getFileLastNo(recipeNoList.get(i));
 			String fileLastPath = recipeService.getFileLastNamePath(fileLastNo);
-			 //RecipeVO rvo=recipeService.getRecipeInfo(Integer.parseInt(recipeNoList.get(i)));
 			 RecipeVO rvo=recipeService.getRecipeInfoNoHits(Integer.parseInt(recipeNoList.get(i)));
 			 String tag=recipeService.getItemTag(Integer.parseInt(recipeNoList.get(i)));
 			 HashMap<String, Object> map=new HashMap<String, Object>();

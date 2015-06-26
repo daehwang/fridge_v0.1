@@ -8,7 +8,6 @@ import org.dedeplz.fridge.model.recipe.paging.FavoriteListVO;
 import org.dedeplz.fridge.model.recipe.paging.ListVO;
 
 public interface RecipeService {
-	public  ListVO getRecipeList(String pageNo);
 	public int getItemNo(String itemName);
 	public void insertRecipeItem(RecipeItemVO rivo);
 	public RecipeVO getRecipeInfo(int recipeNo);

@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 public interface RecipeDAO {
-	public  List<RecipeVO> getRecipeList(String pageNo);
 	public int totalContent();
 	public void insertRecipeItem(RecipeItemVO rivo);
 	public void insertItem(String itemName);
@@ -47,5 +46,5 @@ public interface RecipeDAO {
 	public void updateHitsByRecipeNo(int recipeNo);
 	public int getTotalGood(int recipeNo);
 	public int getTotalBad(int recipeNo);
-	public List<Integer> myRecipeList(String id);
+	public List<Integer> getMyRecipeList(String id);
 }

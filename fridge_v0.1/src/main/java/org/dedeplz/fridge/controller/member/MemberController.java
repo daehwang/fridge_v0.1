@@ -129,7 +129,6 @@ public class MemberController {
             return "member_login_fail";
          else {
             int totalLove=memberService.getTotalLove(vo.getId());
-            System.out.println("totalLove:"+totalLove);
             mvo.setLove(totalLove);
             memberService.updateMemberLove(mvo);
             HttpSession session = request.getSession();
@@ -155,7 +154,6 @@ public class MemberController {
                return "member_upgrade_result";
             }
             session.setAttribute("mvo", mvo);
-            System.out.println("로그인 mvo:"+mvo);
             return "redirect:home.do";
          }
       }     

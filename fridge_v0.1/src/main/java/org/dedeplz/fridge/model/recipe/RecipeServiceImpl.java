@@ -26,19 +26,6 @@ public class RecipeServiceImpl implements RecipeService{
 	@Resource(name="uploadPath")
 	private String path;
 	/**
-	 * 해당 페이지에 해당하는 레시피 목록을 받아온다
-	 */
-	@Override
-	public ListVO getRecipeList(String pageNo) {
-		if(pageNo==null||pageNo=="") 
-			pageNo="1";
-		List<RecipeVO> list=recipeDAO.getRecipeList(pageNo);
-		int total=recipeDAO.totalContent();
-		PagingBean paging=new PagingBean(total,Integer.parseInt(pageNo));
-		ListVO lvo=new ListVO(list,paging);
-		return lvo;
-	}
-	/**
 	 * 태그를 이용한 레시피 검색
 	 */
 	@Override

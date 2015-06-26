@@ -23,9 +23,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       <result property="insertDate" column="insert_date" />   
    </resultMap>
 	
-	 <select id="getRecipeList" resultMap="recipeListRM" >
-	select recipe_no,title,contents,post_date,nick,cooking_time,hits,member_id from (select recipe_no,title,contents,post_date,nick,cooking_time,hits,member_id,ceil(rownum/5) as page from(select recipe_no,title,contents,to_char(post_date,'YYYY.MM.DD') as post_date,nick,cooking_time,hits,member_id from recipe order by recipe_no desc)) where page=#{value}
-   </select>
    <select id="totalContent" resultType="int">
 		select count(*) from recipe
 	</select>
@@ -39,7 +36,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     insert into item (item_no,item_name) values (item_no_seq.nextval,#{value}) 
    </insert>
 
- <select id="showRecipe" resultMap="recipeListRM"> 
+ <select id="getRecipeInfo" resultMap="recipeListRM"> 
    select * from recipe where recipe_no=#{value}
    </select> 
     <select id="getCountItemNo" resultType="int">
@@ -56,7 +53,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  	values(#{recipeNo},#{title},#{contents},sysdate,#{nick},#{cookingTime},0,#{memberId})
  	</insert>
  	
- 	<select id="getRecipeItemList" resultType="string">
+ 	<select id="getItemNoList" resultType="string">
  		select item_no from recipe_item where recipe_no=#{value}
  	</select> 
 	<select id="getItemNameByItemNo" resultType="string">
@@ -155,7 +152,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    		select count(bad) from good_n_bad where recipe_no=#{value} and bad=1
    </select>
    <!-- 회원자신이 쓴 글 번호 가지고오기 -->
-   <select id="myRecipeList" resultType="int">
+   <select id="getMyRecipeList" resultType="int">
       select recipe_no from recipe where member_id=#{value}
    </select>
 </mapper>

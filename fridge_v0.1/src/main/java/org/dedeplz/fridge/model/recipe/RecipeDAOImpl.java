@@ -13,15 +13,6 @@ import org.springframework.stereotype.Repository;
 public class RecipeDAOImpl implements RecipeDAO {
 	@Resource(name = "sqlSessionTemplate")
 	private SqlSessionTemplate sqlSessionTemplate;
-
-	/**
-	 * 레시피 리스트를 받아온다
-	 */
-	@Override
-	public List<RecipeVO> getRecipeList(String pageNo) {
-		return sqlSessionTemplate.selectList("recipe.getRecipeList", pageNo);
-	}
-
 	/**
 	 * 등록된 레시피 총 수
 	 */
@@ -67,7 +58,7 @@ public class RecipeDAOImpl implements RecipeDAO {
 	 */
 	@Override
 	public RecipeVO getRecipeInfo(int recipeNo) {
-		return sqlSessionTemplate.selectOne("recipe.showRecipe", recipeNo);
+		return sqlSessionTemplate.selectOne("recipe.getRecipeInfo", recipeNo);
 	}
 
 	/**
@@ -361,7 +352,7 @@ public class RecipeDAOImpl implements RecipeDAO {
 	    * id를 이용 해당 아이디의 모든 레시피 번호를 받아온다.
 	    */
 	   @Override
-	   public List<Integer> myRecipeList(String id) {
-	      return sqlSessionTemplate.selectList("recipe.myRecipeList", id);
+	   public List<Integer> getMyRecipeList(String id) {
+	      return sqlSessionTemplate.selectList("recipe.getMyRecipeList", id);
 	   }
 }
