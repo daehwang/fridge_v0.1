@@ -524,7 +524,7 @@
 							url:"deleteFavorite.do",				
 							data:"memberId=${sessionScope.mvo.id}&recipeNo=" + recipeNo,
 							success:function(result){ 
-								alert(result.list);
+								alert(result.list);	 
 									 var info = "<img src='${initParam.root}/img/star12345.png' id='favoriteImg1'></div>";
 										$("#favoriteView").html(info);
 								
