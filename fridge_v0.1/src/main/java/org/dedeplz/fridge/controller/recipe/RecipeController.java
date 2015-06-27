@@ -135,14 +135,17 @@ public class RecipeController {
 		map.put("recipeNo", rvo.getRecipeNo());
 		Map<String, Object> resultMap = new HashMap<String, Object> ();
 		
-		HashMap<String,Object> favoriteMap=new HashMap<String, Object>();
 		MemberVO mvo = (MemberVO) session.getAttribute("mvo");
-		favoriteMap.put("memberId", mvo.getId());
-		favoriteMap.put("recipeNo", rvo.getRecipeNo());
-		int favoriteInfo = recipeService.getFavoriteRecipe(favoriteMap);
-		System.out.println(favoriteInfo);
+		if(mvo != null){
+			HashMap<String,Object> favoriteMap=new HashMap<String, Object>();
 		
-		resultMap.put("favoriteInfo", favoriteInfo);
+			favoriteMap.put("memberId", mvo.getId());
+			favoriteMap.put("recipeNo", rvo.getRecipeNo());
+			int favoriteInfo = recipeService.getFavoriteRecipe(favoriteMap);
+			System.out.println(favoriteInfo);
+		
+			resultMap.put("favoriteInfo", favoriteInfo);
+		}
 		resultMap.put("rvo", rvo);
 		resultMap.put("tag",tag);
 		resultMap.put("allFilePath", allFilePath.toString());
