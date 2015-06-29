@@ -74,7 +74,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       update recipe set title=#{title},contents=#{contents},cooking_time=#{cookingTime} where recipe_no=#{recipeNo}
    </update>
    <select id="getRecipeNoByItem" resultType="String">
-   		select r.recipe_no from recipe r,  (select recipe_no from recipe_item
+   		select r.recipe_no from recipe r, (select recipe_no from recipe_item
 		where item_no=(select item_no from item where item_name=#{value})) t 
 		where r.recipe_no=t.recipe_no
    </select>
@@ -168,29 +168,3 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    		delete from favorites where recipe_no=#{value}
    </delete>
 </mapper>
-
- 
- 
- 
- 
- 
- 
- 
- 
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

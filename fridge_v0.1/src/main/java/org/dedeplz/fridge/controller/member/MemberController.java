@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.dedeplz.fridge.common.LoginCheck;
 import org.dedeplz.fridge.model.member.MemberService;
 import org.dedeplz.fridge.model.member.MemberVO;
 import org.dedeplz.fridge.model.recipe.RecipeService;

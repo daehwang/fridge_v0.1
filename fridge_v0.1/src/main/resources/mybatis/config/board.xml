@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Sql Mapper -->
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper  namespace="board">
+   <resultMap type="bvo" id="boardRM">
+		<result property="boardNo" column="board_no" />			
+		<result property="postDate" column="post_date" />  
+		<result property="memberId" column="member_id"/> 
+	</resultMap>
+	<!-- 전체 자유게시판 리스트 -->
+	<select id="getPostingList" resultType="bvo" resultMap="boardRM">
+	select board_no,category,nick,title,post_date,hits from(
+	select board_no,category,nick,title,post_date,hits,ceil(rownum/10) as page from(
+		select board_no,category,nick,title,to_char(post_date,'YYYY.MM.DD') as post_date,hits
+		from board order by board_no desc
+		)
+	) where page=#{value}
+	</select>
+	<!-- 전체 자유게시판 포스팅 수 -->
+	<select id="getTotalPostingCount" resultType="int"> 
+		select count(*) from board
+	</select>
+	<!-- 자유게시판 글 등록 -->
+	 <insert id="registerBoard" parameterType="bvo">
+ 	 <selectKey keyProperty="boardNo" resultType="int" order="BEFORE">
+ 		select board_seq.nextval from dual
+	</selectKey>
+ 	insert into board (board_no,category,title,contents,post_date,nick,hits,member_id)
+ 	values(#{boardNo},#{category},#{title},#{contents},sysdate,#{nick},0,#{memberId})
+ 	</insert>
+ 	<!-- 자유게시판 정보 -->
+ 	 <select id="getBoardInfo" resultMap="boardRM"> 
+   select * from board where board_no=#{value}
+   </select> 
+    <!-- 자유게시판 삭제 -->
+     <delete id="deleteBoard">
+ 		delete board where board_no=#{value}
+ 	</delete>
+ 	<!-- 조회수 올리기 -->
+	<update id="updateCount" parameterType="int">
+	update board set hits=hits+1 where board_no=#{board_no}
+	</update>
+	<!-- 자유게시판 수정 -->
+	   <update id="updateBoard" parameterType="bvo">
+      update board set
+      title=#{title},contents=#{contents},category=#{category}
+      where      board_no=#{boardNo}
+   </update>
+   <!-- 카테고리로 찾은 리스트 목록 -->
+   	<select id="getSearchByCategoryList" resultType="bvo" resultMap="boardRM" parameterType="hashMap">
+	select board_no,category,nick,title,post_date,hits from(
+	select board_no,category,nick,title,post_date,hits,ceil(rownum/10) as page from(
+		select board_no,category,nick,title,to_char(post_date,'YYYY.MM.DD') as post_date,hits
+		from board where category=#{category} order by board_no desc 
+		)
+	) where page=#{pageNo} 
+	</select>
+	<!-- 카테고리로 검색한 자유게시글 수  -->
+	<select id="getTotalCategoryCount" resultType="int"> 
+		select count(*) from board where category=#{category}
+	</select>
+   <!-- 제목으로 검색한 자유게시글 목록  -->
+   <select id="getSearchByTitleList" resultType="bvo" resultMap="boardRM" parameterType="hashmap">
+      select
+      board_no,category,nick,title,post_date,hits from(
+      select
+      board_no,category,nick,title,post_date,hits,ceil(rownum/10) as page
+      from(
+      select
+      board_no,category,nick,title,to_char(post_date,'YYYY.MM.DD') as
+      post_date,hits
+      from board where title like '%${title}%' order by board_no desc
+      ) 
+      ) where page=#{pageNo} 
+   </select>
+   	<!-- 제목으로 검색한 자유게시글 수  -->
+   <select id="getTotalSearchByTitleCount" resultType="int">
+      select count(*)
+      from board where title like '%${value}%'
+   </select>
+   
+   
+      <!-- 글쓴이(닉네임) 검색한 자유게시글 목록 -->
+   <select id="getSearchByWriterList" resultType="bvo" resultMap="boardRM" parameterType="hashmap">
+      select
+      board_no,category,nick,title,post_date,hits from(
+      select
+      board_no,category,nick,title,post_date,hits,ceil(rownum/10) as page
+      from(
+      select
+      board_no,category,nick,title,to_char(post_date,'YYYY.MM.DD') as
+      post_date,hits
+      from board where nick like '%${nick}%' order by board_no desc
+      ) 
+      ) where page=#{pageNo} 
+   </select>
+     	<!-- 글쓴이(닉네임)으로 검색한 자유게시글 수  -->
+   <select id="getTotalSearchByWriterCount" resultType="int">
+      select count(*)
+      from board where nick like '%${value}%'
+   </select>
+   
+   
+   <!-- 내용으로 검색한 자유게시글 목록 -->
+   <select id="getSearchByContentsList" resultType="bvo" resultMap="boardRM" parameterType="hashmap">
+      select
+      board_no,category,nick,title,post_date,hits from(
+      select
+      board_no,category,nick,title,post_date,hits,ceil(rownum/10) as page
+      from(
+      select
+      board_no,category,nick,title,to_char(post_date,'YYYY.MM.DD') as
+      post_date,hits
+      from board where contents like '%${contents}%' order by board_no desc
+      ) 
+      ) where page=#{pageNo} 
+   </select>
+     	<!-- 내용으로 검색한 자유게시글 수  -->
+   <select id="getTotalSearchByContentsCount" resultType="int">
+      select count(*)
+      from board where contents like '%${value}%'
+   </select>
+   
+</mapper>

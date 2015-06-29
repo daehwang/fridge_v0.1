@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.dedeplz.fridge.controller.member.LoginCheck;
+import org.dedeplz.fridge.common.LoginCheck;
 import org.dedeplz.fridge.model.member.MemberVO;
 import org.dedeplz.fridge.model.recipe.FavoriteVO;
 import org.dedeplz.fridge.model.recipe.FileVO;
@@ -68,7 +68,7 @@ public class RecipeController {
 		for (int i = 0; i < recipeNoList.size(); i++) {
 			String fileLastNo = recipeService.getFileLastNo(recipeNoList.get(i));
 			String fileLastPath = recipeService.getFileLastNamePath(fileLastNo);
-			 RecipeVO rvo=recipeService.getRecipeInfo(Integer.parseInt(recipeNoList.get(i)));
+			 RecipeVO rvo=recipeService.getRecipeInfoNoHits(Integer.parseInt(recipeNoList.get(i)));
 			 String tag=recipeService.getItemTag(Integer.parseInt(recipeNoList.get(i)));
 			 int goodPoint = recipeService.getTotalGood(Integer.parseInt(recipeNoList.get(i)));
 			 HashMap<String, Object> map=new HashMap<String, Object>();
@@ -85,7 +85,7 @@ public class RecipeController {
 				for (int i = 0; i < topRecipeNoList.size(); i++) {
 					String fileLastNo = recipeService.getFileLastNo(topRecipeNoList.get(i));
 					String fileLastPath = recipeService.getFileLastNamePath(fileLastNo);
-					 RecipeVO rvo=recipeService.getRecipeInfo(Integer.parseInt(topRecipeNoList.get(i)));
+					 RecipeVO rvo=recipeService.getRecipeInfoNoHits(Integer.parseInt(topRecipeNoList.get(i)));
 					 String tag=recipeService.getItemTag(Integer.parseInt(topRecipeNoList.get(i)));
 					 int goodPoint = recipeService.getTotalGood(Integer.parseInt(topRecipeNoList.get(i)));
 					 HashMap<String, Object> map=new HashMap<String, Object>();
@@ -108,22 +108,28 @@ public class RecipeController {
 	 */
     @RequestMapping("searchRecipe.do")
     public ModelAndView searchRecipe(String items){
-    	List<String> recipeNoList = recipeService.getRecipeNoByItem(items);
-		 List<HashMap<String,Object>> fileLastNamePath = new ArrayList<HashMap<String,Object>>();
-		System.out.println(fileLastNamePath);
-		for (int i = 0; i < recipeNoList.size(); i++) {
-			String fileLastNo = recipeService.getFileLastNo(recipeNoList.get(i));
-			String fileLastPath = recipeService.getFileLastNamePath(fileLastNo);
-			 RecipeVO rvo=recipeService.getRecipeInfoNoHits(Integer.parseInt(recipeNoList.get(i)));
-			 String tag=recipeService.getItemTag(Integer.parseInt(recipeNoList.get(i)));
-			 HashMap<String, Object> map=new HashMap<String, Object>();
-	         map.put("rvo",rvo);
-	         map.put("fileLastPath", fileLastPath);
-	         map.put("tag", tag);
-	         fileLastNamePath.add(map);
-		}
-		return new ModelAndView("home", "fileLastNamePath", fileLastNamePath);
-    }
+        List<String> recipeNoList = recipeService.getRecipeNoByItem(items);
+        List<HashMap<String,Object>> fileLastNamePath = new ArrayList<HashMap<String,Object>>();
+       System.out.println(fileLastNamePath);
+       for (int i = 0; i < recipeNoList.size(); i++) {
+          String fileLastNo = recipeService.getFileLastNo(recipeNoList.get(i));
+          String fileLastPath = recipeService.getFileLastNamePath(fileLastNo);
+           RecipeVO rvo=recipeService.getRecipeInfoNoHits(Integer.parseInt(recipeNoList.get(i)));
+           String tag=recipeService.getItemTag(Integer.parseInt(recipeNoList.get(i)));
+           int goodPoint = recipeService.getTotalGood(Integer.parseInt(recipeNoList.get(i)));
+           HashMap<String, Object> map=new HashMap<String, Object>();
+             map.put("rvo",rvo);
+             map.put("fileLastPath", fileLastPath);
+             map.put("tag", tag);
+             map.put("goodPoint",goodPoint);
+             fileLastNamePath.add(map);
+       }
+       Map<String, Object> resultMap = new HashMap<String, Object>();
+       resultMap.put("recipeNoList", recipeNoList.size());
+       resultMap.put("filePath",fileLastNamePath);
+
+       return new ModelAndView("home", "total", resultMap);
+     }
 	/**
 	 * 레시피 상세 정보 보기
 	 * 

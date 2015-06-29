@@ -1,4 +1,4 @@
-package org.dedeplz.fridge.controller.member;
+package org.dedeplz.fridge.common;
 
 import java.io.IOException;
 

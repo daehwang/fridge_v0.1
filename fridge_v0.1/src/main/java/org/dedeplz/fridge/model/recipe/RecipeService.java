@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.dedeplz.fridge.model.recipe.paging.FavoriteListVO;
-import org.dedeplz.fridge.model.recipe.paging.ListVO;
 
 public interface RecipeService {
 	public int getItemNo(String itemName);

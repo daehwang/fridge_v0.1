@@ -48,14 +48,14 @@ function loginCheck() {
 							
 						</div>
 					</div>
-					<div class="col-lg-3 col-md-6 text-center">
-						<div class="service-box">
-							<i class="fa fa-2x fa-paper-plane wow bounceIn" style="color:#42FDFF"
-								data-wow-delay=".1s"></i>
-							<h5>자유 게시판</h5>
-						</div>
-					</div>
-
+				  <div class="col-lg-3 col-md-6 text-center">
+                  <div class="service-box">
+                     <a href="${initParam.root}BoardList.do">
+                     <i class="fa fa-2x fa-paper-plane wow bounceIn" style="color:#42FDFF"
+                        data-wow-delay=".1s"></i></a>
+                     <h5><a href="${initParam.root}BoardList.do">자유 게시판</a></h5>
+                  </div>
+               </div>
 					<div class="col-lg-3 col-md-6 text-center">
 						<div class="service-box">
                   <c:choose>

@@ -205,6 +205,12 @@ create table recipe_item(
 	constraint fk_recipe_no foreign key(recipe_no) references recipe(recipe_no),
 	constraint fk_item_no foreign key(item_no) references item(item_no)
 )
+insert into recipe values(1870,'shjdskf','fsdhskjdfhskjdf',sysdate,'지원언니',15,0,'aaaa');
+insert into recipe values(1871,'shjdskf','fsdhskjdfhskjdf',sysdate,'멍멍이',15,0,'bbbb');
+insert into recipe values(1872,'shjdskf','fsdhskjdfhskjdf',sysdate,'ㅋㅋㅋㅋㅋ',15,0,'ssss');
+insert into recipe_file values(560,'dsfjakladsf',1870,'xvkjzhsdkj')
+insert into recipe_file values(561,'dsfjakladsf',1871,'xvkjzhsdkj')
+insert into recipe_file values(562,'dsfjakladsf',1872,'xvkjzhsdkj')
 insert into recipe_item values(300,53,1870);
 insert into recipe_item values(301,53,1871);
 insert into recipe_item values(302,53,1872);

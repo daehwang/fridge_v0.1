@@ -15,13 +15,16 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 		<typeAlias type="org.dedeplz.fridge.model.recipe.RecipeVO" alias="rvo"/>	
 		<typeAlias type="org.dedeplz.fridge.model.recipe.FileVO" alias="fvo"/>		
 		<typeAlias type="org.dedeplz.fridge.model.recipe.FavoriteVO" alias="rfvo"/>
-		
+		<typeAlias type="org.dedeplz.fridge.model.board.BoardVO" alias="bvo"/>
+		<typeAlias type="org.dedeplz.fridge.model.board.FileVO" alias="bfvo"/>
 	</typeAliases>	
     <!-- sql mapping config xml 을 연결 -->
 	<mappers>
 		<mapper resource="mybatis/config/member.xml"/>	
 		<mapper resource="mybatis/config/recipe.xml"/>
-		<mapper resource="mybatis/config/recipeFile.xml"/>	
+		<mapper resource="mybatis/config/recipeFile.xml"/>
+		<mapper resource="mybatis/config/board.xml"/>
+      	<mapper resource="mybatis/config/boardFile.xml"/>	
 	</mappers>
 </configuration>
 

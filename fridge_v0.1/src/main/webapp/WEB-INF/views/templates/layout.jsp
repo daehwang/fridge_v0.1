@@ -242,11 +242,14 @@ img#badImg {
                }
          });
          
+         //id, nick 중복되면 submit 때 alert
          $("#submitBtn").click(function() {
-             if(idchecked==true){
+             if(idchecked==true&&nickchecked==true){
                 $("#regForm").submit();
-             }else{
-                alert("아이디 체크부탁");
+             }else if(idchecked==false){
+                alert("아이디 중복 체크하세요!");
+             }else if(nickchecked==false){
+                alert("닉네임 중복 체크하세요!");
              }
           });
          
@@ -334,6 +337,59 @@ img#badImg {
                }
                $("#updForm").submit();
             });   
+            /* board */
+            //board 등록
+      $("#registerBoard").click(function(){
+             obj.getById["contents"].exec("UPDATE_CONTENTS_FIELD", []); 
+             var info = $("#contents").val().indexOf("<img");
+              if($("#category").val()==""){
+                     alert("카테고리를 입력하세요");
+                     return false;
+              } else if($("#title").val()==""){
+                  alert("제목을 입력하세요");
+                  return false;
+               } 
+               $("#registerBoardForm").submit();
+             
+          });
+      //board 수정
+      $("#updateBoardBtn").click(function(){
+            if($("#category").val()==""){
+                 alert("말머리를 선택하세요!");
+                 return false;
+              }
+            obj.getById["contents"].exec("UPDATE_CONTENTS_FIELD", []);
+            $("#updateBoard").submit();
+        });
+      //취소 버튼
+        $("#cancleBoardBtn").click(function(){
+              location.href="${initParam.root}BoardList.do";
+           });
+        //제목,글쓴이,내용 별 검색
+        $("#searchBtn").click(function(){
+           var searchCategory=$("#searchCategory").val();
+           //var searchContent=$("#searchContent").val();
+           if(searchCategory=='title'){
+              location.href="${initParam.root}searchByTitle.do?title="+$("#searchContent").val();
+           }else if(searchCategory=='writer'){
+              location.href="${initParam.root}searchByWriter.do?nick="+$("#searchContent").val();
+           }else if(searchCategory=='contents'){
+              location.href="${initParam.root}searchByContents.do?contents="+$("#searchContent").val();
+           }else if(searchCategory==""){
+              alert("검색 조건을 선택하세요!");
+           }
+        });
+        //카테고리 별 검색
+        $("#searchByCategoryBtn").click(function(){
+           var category=$("#category").val();
+           if(category=='all'){
+        location.href="${initParam.root}BoardList.do";
+           }else{
+                location.href="${initParam.root}searchByCategory.do?category="+category;
+           }
+        });
+        
+            //좋아요
             var goodImg="<img src='${initParam.root}/img/추천.jpg' id='goodImg'>&nbsp;&nbsp;";
             var badImg="<img src='${initParam.root}/img/비추천.jpg' id='badImg'>&nbsp;&nbsp;";
       		/* 좋아요 추천 */
@@ -598,13 +654,10 @@ function testAlert(path) {
       	        		"<button type='button' class='btn btn-primary' data-dismiss='modal'>"+"<i class='fa fa-times'></i> Close</button><br><br>"
       	        		+ "<div id='favoriteView'><img src='${initParam.root}/img/star123.png' id='favoriteImg2'></div>"	
       	           );
-        		
         	}   
         }
         }//callback         
      });//ajax 
-
-     
 }
 </script>
 

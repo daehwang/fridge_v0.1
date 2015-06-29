@@ -64,7 +64,7 @@
    <mvc:interceptors>
       <mvc:interceptor>
          <mvc:mapping path="/**" />
-         <bean class="org.dedeplz.fridge.controller.member.LoginCheckInterceptor" />
+         <bean class="org.dedeplz.fridge.common.LoginCheckInterceptor" />
       </mvc:interceptor>
    </mvc:interceptors>
 </beans>
