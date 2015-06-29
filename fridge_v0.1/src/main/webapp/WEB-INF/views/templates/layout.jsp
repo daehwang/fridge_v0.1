@@ -334,8 +334,8 @@ img#badImg {
                }
                $("#updForm").submit();
             });   
-            var goodImg="<img src='${initParam.root}/img/추천.jpg'>&nbsp;&nbsp;";
-            var badImd="<img src='${initParam.root}/img/비추천.jpg'>&nbsp;&nbsp;";
+            var goodImg="<img src='${initParam.root}/img/추천.jpg' id='goodImg'>&nbsp;&nbsp;";
+            var badImg="<img src='${initParam.root}/img/비추천.jpg' id='badImg'>&nbsp;&nbsp;";
       		/* 좋아요 추천 */
             $("#gogo").on("click","#totalGood",function(){
             	if("${sessionScope.mvo.id}"==""){
