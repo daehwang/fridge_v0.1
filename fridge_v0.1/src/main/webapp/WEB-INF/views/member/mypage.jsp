@@ -111,6 +111,8 @@
 									data-whatever="@getbootstrap">회원정보 수정</a>&nbsp;&nbsp;&nbsp;&nbsp;
 						<a class="btn btn-danger btn-sm"  data-toggle="modal" data-target="#deleteModal"
 									data-whatever="@getbootstrap">탈퇴</a>&nbsp;&nbsp;&nbsp;&nbsp;
+						<a class="btn btn-danger btn-sm"  href="${initParam.root}favoriteRecipeList.do" data-target="#favoriteList"
+                           data-whatever="@getbootstrap">즐겨찾기 리스트 관리</a>&nbsp;&nbsp;&nbsp;&nbsp;
 						<a class="btn btn-info btn-sm" id="gobackBtn">돌아가기</a><br><br><br><br>
 					</div>
 		</div>

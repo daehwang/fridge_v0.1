@@ -2,6 +2,8 @@ package org.dedeplz.fridge.model.recipe;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -13,7 +15,6 @@ import java.util.StringTokenizer;
 import javax.annotation.Resource;
 
 import org.dedeplz.fridge.model.recipe.paging.FavoriteListVO;
-import org.dedeplz.fridge.model.recipe.paging.ListVO;
 import org.dedeplz.fridge.model.recipe.paging.PagingBean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -438,5 +439,48 @@ public class RecipeServiceImpl implements RecipeService{
 	@Override
 	public List<Integer> getMyRecipeList(String id) {
 		return recipeDAO.getMyRecipeList(id);
+	}
+	/**
+	 * 
+	 */
+	public List<String> getTopPointRecipeList(){
+		List<String> list = getAllRecipeNo();
+		List<TopRecipeVO> pointOfRecipeList = new ArrayList<TopRecipeVO>();
+		List<String> topList = new ArrayList<String>();
+		for (int i = 0; i < list.size(); i++) {
+			TopRecipeVO tvo = new TopRecipeVO();			
+			tvo.setRecipeNo(Integer.parseInt(list.get(i)));
+			tvo.setTotalGood(recipeDAO.getTotalGood(Integer.parseInt(list.get(i))));
+			pointOfRecipeList.add(tvo);
+		}
+		Collections.sort(pointOfRecipeList, new NoDescCompare());
+		System.out.printf("\n\n===== 숫자 내림 차순 정렬 =====\n");
+		/*for (TopRecipeVO temp : pointOfRecipeList) {
+			System.out.println(temp);
+		}*/
+		for (int i = 0; i < 3; i++) {
+			topList.add(String.valueOf(pointOfRecipeList.get(i).getRecipeNo()));
+			System.out.println("내림차순"+String.valueOf(pointOfRecipeList.get(i).getTotalGood())	);
+		}
+		System.out.println("결과 리스트" + list);
+		return topList;
+		
+	}
+	/**
+	 * No 내림차순
+	 * @author Ju
+	 *
+	 */
+	static class NoDescCompare implements Comparator<TopRecipeVO> {
+ 
+		/**
+		 * 내림차순(DESC)
+		 */
+		@Override
+		public int compare(TopRecipeVO arg0, TopRecipeVO arg1) {
+			// TODO Auto-generated method stub
+			return arg0.getTotalGood() > arg1.getTotalGood() ? -1 : arg0.getTotalGood() < arg1.getTotalGood() ? 1:0;
+		}
+ 
 	}
 }

@@ -46,4 +46,5 @@ public interface RecipeService {
 	public RecipeVO getRecipeInfoNoHits(int recipeNo);
 	public int getFavoriteRecipe(HashMap<String,Object> map);
 	public List<Integer> getMyRecipeList(String id);
+	public List<String> getTopPointRecipeList();
 }

@@ -280,7 +280,7 @@ img#badImg {
                   alert("태그를 입력하세요");
                   return false;
                }
-               $("#registerRecipeForm").submit();
+               $("#registerForm").submit();
              
           });//submit
           //수정폼

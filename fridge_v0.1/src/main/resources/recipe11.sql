@@ -165,3 +165,46 @@ create table favorites(
 )
 drop sequence favorites_no_seq;
 create sequence favorites_no_seq nocache;
+insert into good_n_bad(gnb_no,good,bad,recipe_no,member_id) values(gnb_no_seq.nextval,1,0,1870,'victor');
+insert into good_n_bad(gnb_no,good,bad,recipe_no,member_id) values(gnb_no_seq.nextval,1,0,1870,'java11');
+insert into good_n_bad(gnb_no,good,bad,recipe_no,member_id) values(gnb_no_seq.nextval,1,0,1870,'cc');
+insert into good_n_bad(gnb_no,good,bad,recipe_no,member_id) values(gnb_no_seq.nextval,1,0,1871,'victor');
+insert into good_n_bad(gnb_no,good,bad,recipe_no,member_id) values(gnb_no_seq.nextval,1,0,1871,'java11');
+insert into good_n_bad(gnb_no,good,bad,recipe_no,member_id) values(gnb_no_seq.nextval,1,0,1871,'cc');
+insert into good_n_bad(gnb_no,good,bad,recipe_no,member_id) values(gnb_no_seq.nextval,1,0,1872,'java11');
+insert into good_n_bad(gnb_no,good,bad,recipe_no,member_id) values(gnb_no_seq.nextval,1,0,1872,'cc');
+
+create table recipe(
+   recipe_no         number               primary key,
+   title               varchar2(50)      not null,
+   contents         clob    not null,
+   post_date         date      not null,
+   nick               varchar2(50)      not null,
+   cooking_time   number               not null,
+   hits               number             default 0,
+   member_id      varchar2(50)      not null,
+   constraint fk_member_id foreign key(member_id) references member(member_id)
+)
+insert into recipe values(1870,'shjdskf','fsdhskjdfhskjdf',sysdate,'지원언니',15,0,'aaaa');
+insert into recipe values(1871,'shjdskf','fsdhskjdfhskjdf',sysdate,'멍멍이',15,0,'bbbb');
+insert into recipe values(1872,'shjdskf','fsdhskjdfhskjdf',sysdate,'ㅋㅋㅋㅋㅋ',15,0,'ssss');
+create table recipe_file(
+	file_no number primary key,
+	file_name varchar2(100) not null,
+	recipe_no number not null,
+	file_path varchar2(500) not null,
+	constraint fk_recipe_no_file foreign key(recipe_no) references recipe(recipe_no)
+)
+insert into recipe_file values(560,'dsfjakladsf',1870,'xvkjzhsdkj')
+insert into recipe_file values(561,'dsfjakladsf',1871,'xvkjzhsdkj')
+insert into recipe_file values(562,'dsfjakladsf',1872,'xvkjzhsdkj')
+create table recipe_item(
+	food_reserves number primary key,
+	item_no number not null,
+	recipe_no number not null,
+	constraint fk_recipe_no foreign key(recipe_no) references recipe(recipe_no),
+	constraint fk_item_no foreign key(item_no) references item(item_no)
+)
+insert into recipe_item values(300,53,1870);
+insert into recipe_item values(301,53,1871);
+insert into recipe_item values(302,53,1872);
