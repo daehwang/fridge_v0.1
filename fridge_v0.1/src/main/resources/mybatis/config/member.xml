@@ -4,118 +4,91 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="member">
-	<resultMap type="mvo" id="memberRM">
-		<result property="id" column="member_id" />
-		<result property="level" column="member_level" />
-		<result property="registerDate" column="register_date" />
-	</resultMap>
-	<!-- 아이디로 찾기 -->
-	<select id="findById" resultMap="memberRM">
-		select * from member where
-		member_id=#{value}
-	</select>
-	<!-- 회원가입 -->
-	<insert id="registerMember" parameterType="mvo">
-		insert into
-		member(member_id, password, nick, name, email, gender, answer,
-		member_level, register_date, love)
-		values(#{id}, #{password},#{nick},
-		#{name}, #{email}, #{gender}, #{answer}, 1, sysdate, 0 )
-	</insert>
-	<!-- id체크 -->
-	<select id="idCheck" resultType="int">
-		select count(*) from member
-		where member_id=#{value}
-	</select>
-	<!-- nick체크 -->
-	<select id="nickCheck" resultType="int">
-		select count(*) from member
-		where nick=#{value}
-	</select>
-	<!-- 로그인 -->
-	<select id="login" resultMap="memberRM">
-		select *from member where member_id=#{id} and password=#{password}
-	</select>
-	<!-- 회원정보 수정 -->
-	<update id="updateMember" parameterType="mvo">
-		update member set
-		password=#{password},name=#{name},nick=#{nick},gender=#{gender},
-		email=#{email},answer=#{answer} where member_id=#{id}
-	</update>
-	<!-- 회원 탈퇴 -->
-	<delete id="deleteMember" parameterType="mvo">
-		delete from member where member_id=#{id}
-	</delete>
-	<!-- 아이디 찾기 -->
-	<select id="findMyId" parameterType="mvo" resultType="string">
-		select member_id from member
-		where name=#{name} and email=#{email} and answer=#{answer}
-	</select>
-	<!-- 비밀번호 찾기 -->
-	<select id="findMyPassword" parameterType="mvo" resultType="string">
-		select password from member
-		where member_id=#{id} and name=#{name} and email=#{email} and
-		answer=#{answer}
-	</select>
-	<!-- 관리자 List -->
-	<select id="getMemberList" resultMap="memberRM">
-		select member_id,name,nick,gender,email,member_level,register_date
-		FROM(
-		select member_id,name,nick,gender,email,member_level,register_date,
-		CEIL(rownum/10) AS page
-		from(
-		select
-		member_id,name,nick,gender,email,member_level,to_char(register_date,'YYYY.MM.DD')
-		as register_date
-		from member order by register_date desc
-		)
-		) where page=#{value}
-	</select>
-	<!-- 전체 회원 수 -->
-	<select id="totalMember" resultType="int">
-		select count(*) from member
-	</select>
-	<!-- 등급 변경 -->
-	<update id="levelChange" parameterType="mvo">
-		update member set member_level=#{level} where member_id=#{id}
-	</update>
-	<!-- 회원 등급 자동 업그레이드 -->
-	<update id="updateMemberGrade" parameterType="mvo">
-		update member set member_level=member_level+1 where member_id=#{id} and
-		password=#{password}
-	</update>
-	<update id="updateMemberLove" parameterType="mvo">
+   <resultMap type="mvo" id="memberRM">
+      <result property="id" column="member_id" />
+      <result property="level" column="member_level" />
+      <result property="registerDate" column="register_date" />
+   </resultMap>
+   <!-- 아이디로 찾기 -->
+   <select id="findById" resultMap="memberRM">
+      select * from member where
+      member_id=#{value}
+   </select>
+   <!-- 회원가입 -->
+   <insert id="registerMember" parameterType="mvo">
+      insert into
+      member(member_id, password, nick, name, email, gender, answer,
+      member_level, register_date, love)
+      values(#{id}, #{password},#{nick},
+      #{name}, #{email}, #{gender}, #{answer}, 1, sysdate, 0 )
+   </insert>
+   <!-- id체크 -->
+   <select id="idCheck" resultType="int">
+      select count(*) from member
+      where member_id=#{value}
+   </select>
+   <!-- nick체크 -->
+   <select id="nickCheck" resultType="int">
+      select count(*) from member
+      where nick=#{value}
+   </select>
+   <!-- 로그인 -->
+   <select id="login" resultMap="memberRM">
+      select *from member where member_id=#{id} and password=#{password}
+   </select>
+   <!-- 회원정보 수정 -->
+   <update id="updateMember" parameterType="mvo">
+      update member set
+      password=#{password},name=#{name},nick=#{nick},gender=#{gender},
+      email=#{email},answer=#{answer} where member_id=#{id}
+   </update>
+   <!-- 회원 탈퇴 -->
+   <delete id="deleteMember" parameterType="mvo">
+      delete from member where member_id=#{id}
+   </delete>
+   <!-- 아이디 찾기 -->
+   <select id="findMyId" parameterType="mvo" resultType="string">
+      select member_id from member
+      where name=#{name} and email=#{email} and answer=#{answer}
+   </select>
+   <!-- 비밀번호 찾기 -->
+   <select id="findMyPassword" parameterType="mvo" resultType="string">
+      select password from member
+      where member_id=#{id} and name=#{name} and email=#{email} and
+      answer=#{answer}
+   </select>
+   <!-- 관리자 List -->
+   <select id="getMemberList" resultMap="memberRM">
+      select member_id,name,nick,gender,email,member_level,register_date
+      FROM(
+      select member_id,name,nick,gender,email,member_level,register_date,
+      CEIL(rownum/10) AS page
+      from(
+      select
+      member_id,name,nick,gender,email,member_level,to_char(register_date,'YYYY.MM.DD')
+      as register_date
+      from member order by register_date desc
+      )
+      ) where page=#{value}
+   </select>
+   <!-- 전체 회원 수 -->
+   <select id="totalMember" resultType="int">
+      select count(*) from member
+   </select>
+   <!-- 등급 변경 -->
+   <update id="levelChange" parameterType="mvo">
+      update member set member_level=#{level} where member_id=#{id}
+   </update>
+   <!-- 좋아요 수 count하기 -->
+   <select id="loveCount" parameterType="mvo" resultType="int">
+      select love from member where member_id=#{id} and password=#{password}
+   </select>
+   <!-- 회원 등급 자동 업그레이드 -->
+   <update id="updateMemberGrade" parameterType="mvo">
+      update member set member_level=member_level+1 where member_id=#{id} and
+      password=#{password}
+   </update>
+   <update id="updateMemberLove" parameterType="mvo">
       update member set love=#{love} where member_id=#{id}
    </update>
 </mapper>
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

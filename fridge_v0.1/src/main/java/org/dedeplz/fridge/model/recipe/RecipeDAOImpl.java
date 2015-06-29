@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 public class RecipeDAOImpl implements RecipeDAO {
 	@Resource(name = "sqlSessionTemplate")
 	private SqlSessionTemplate sqlSessionTemplate;
+
 	/**
 	 * 등록된 레시피 총 수
 	 */
@@ -83,7 +84,7 @@ public class RecipeDAOImpl implements RecipeDAO {
 	 */
 	@Override
 	public List<String> getItemNoList(int recipeNo) {
-		return sqlSessionTemplate.selectList("recipe.getItemNoList",recipeNo);
+		return sqlSessionTemplate.selectList("recipe.getItemNoList", recipeNo);
 	}
 
 	/**
@@ -141,7 +142,8 @@ public class RecipeDAOImpl implements RecipeDAO {
 	 */
 	@Override
 	public String getFileLastNo(String recipeNo) {
-		return sqlSessionTemplate.selectOne("recipeFile.getFileLastNo", recipeNo);
+		return sqlSessionTemplate.selectOne("recipeFile.getFileLastNo",
+				recipeNo);
 	}
 
 	/**
@@ -149,7 +151,8 @@ public class RecipeDAOImpl implements RecipeDAO {
 	 */
 	@Override
 	public String getFileLastNamePath(String fileLastNo) {
-		return sqlSessionTemplate.selectOne("recipeFile.getFileLastNamePath",fileLastNo);
+		return sqlSessionTemplate.selectOne("recipeFile.getFileLastNamePath",
+				fileLastNo);
 	}
 
 	/**
@@ -186,177 +189,207 @@ public class RecipeDAOImpl implements RecipeDAO {
 	public void updateRecipe(RecipeVO rvo) {
 		sqlSessionTemplate.update("recipe.updateRecipe", rvo);
 	}
+
 	/**
 	 * 재료로 레시피 정보를 가져온다.
 	 */
 	@Override
-	public List<String> getRecipeNoByItem(String item) {		
-		return sqlSessionTemplate.selectList("recipe.getRecipeNoByItem",item);
+	public List<String> getRecipeNoByItem(String item) {
+		return sqlSessionTemplate.selectList("recipe.getRecipeNoByItem", item);
 	}
+
 	/**
 	 * 레시피 번호로 그 해당 레시피의 모든 gnb_no를 리스트로 받아온다.
 	 */
 	@Override
 	public int getGoodAndBadNoCountByRecipeNo(int recipeNo) {
-		return sqlSessionTemplate.selectOne("recipe.getGoodAndBadNoCountByRecipeNo",recipeNo);
+		return sqlSessionTemplate.selectOne(
+				"recipe.getGoodAndBadNoCountByRecipeNo", recipeNo);
 	}
+
 	/**
 	 * 레시피 번호로 그 해당 레시피의 모든 good_n_bad 테이블을 삭제
 	 */
 	@Override
 	public void deleteGoodAndBad(int recipeNo) {
-		sqlSessionTemplate.delete("recipe.deleteGoodAndBad",recipeNo);
-		
+		sqlSessionTemplate.delete("recipe.deleteGoodAndBad", recipeNo);
+
 	}
+
 	/**
-	 * 레시피 번호 ,로그인 아이디를 이용 
-	 * 아이디와 레시피 번호에 해당하는 good이 있는지를 확인
-	 * good이 없으면 0을 리턴
+	 * 레시피 번호 ,로그인 아이디를 이용 아이디와 레시피 번호에 해당하는 good이 있는지를 확인 good이 없으면 0을 리턴
 	 */
 	@Override
 	public int getGood(HashMap<String, Object> map) {
-		int good=0;
-		try{
-			good=sqlSessionTemplate.selectOne("recipe.getGood",map);
-		}catch(Exception e){
-			good=0;
+		int good = 0;
+		try {
+			good = sqlSessionTemplate.selectOne("recipe.getGood", map);
+		} catch (Exception e) {
+			good = 0;
 		}
 		return good;
 	}
+
 	/**
-	 * 레시피 번호 ,로그인 아이디를 이용 
-	 * 아이디와 레시피 번호에 해당하는 bad가 있는지를 확인
-	 * bad가 없으면 0을 리턴
+	 * 레시피 번호 ,로그인 아이디를 이용 아이디와 레시피 번호에 해당하는 bad가 있는지를 확인 bad가 없으면 0을 리턴
 	 */
 	@Override
 	public int getBad(HashMap<String, Object> map) {
-		int bad=0;
-		try{
-			bad=sqlSessionTemplate.selectOne("recipe.getBad",map);
-		}catch(Exception e){
-			bad=0;
+		int bad = 0;
+		try {
+			bad = sqlSessionTemplate.selectOne("recipe.getBad", map);
+		} catch (Exception e) {
+			bad = 0;
 		}
 		return bad;
 	}
+
 	/**
 	 * 레시피번호 로그인 아이디를 이용 추천비추천테이블이 존재 유무를 count로 확인
 	 */
 	@Override
-	public int getGoodAndBadNoCountByRecipeNoAndMemberId(HashMap<String, Object> map) {
-		return sqlSessionTemplate.selectOne("recipe.getGoodAndBadNoCountByRecipeNoAndMemberId",map);
+	public int getGoodAndBadNoCountByRecipeNoAndMemberId(
+			HashMap<String, Object> map) {
+		return sqlSessionTemplate.selectOne(
+				"recipe.getGoodAndBadNoCountByRecipeNoAndMemberId", map);
 	}
+
 	/**
-	 * 레시피 번호 로그인 아이디를 이용 추천 비 추천 테이블 생성
-	 * good 에 1 데이터 입력
+	 * 레시피 번호 로그인 아이디를 이용 추천 비 추천 테이블 생성 good 에 1 데이터 입력
 	 */
 	@Override
 	public void insertGood(HashMap<String, Object> map) {
-		sqlSessionTemplate.insert("recipe.insertGood",map);
+		sqlSessionTemplate.insert("recipe.insertGood", map);
 	}
+
 	/**
-	 * 레시피 번호, 로그인 아이디를 이용 해당 추천/비추천 테이블의
-	 * good값을 0으로 변경
+	 * 레시피 번호, 로그인 아이디를 이용 해당 추천/비추천 테이블의 good값을 0으로 변경
 	 */
 	@Override
 	public void updateCancleGood(HashMap<String, Object> map) {
-		sqlSessionTemplate.update("recipe.updateCancleGood",map);
+		sqlSessionTemplate.update("recipe.updateCancleGood", map);
 	}
+
 	/**
-	 * 레시피 번호, 로그인 아이디를 이용 해당 추천/비추천 테이블의
-	 * good값을 1로, bad를 0으로 변경
+	 * 레시피 번호, 로그인 아이디를 이용 해당 추천/비추천 테이블의 good값을 1로, bad를 0으로 변경
 	 */
 	@Override
 	public void updateUpGood(HashMap<String, Object> map) {
-		sqlSessionTemplate.update("recipe.updateUpGood",map);
+		sqlSessionTemplate.update("recipe.updateUpGood", map);
 	}
+
 	/**
-	 * 레시피 번호 로그인 아이디를 이용 추천 비 추천 테이블 생성
-	 * bad 에 1 데이터 입력
+	 * 레시피 번호 로그인 아이디를 이용 추천 비 추천 테이블 생성 bad 에 1 데이터 입력
 	 */
 	@Override
 	public void insertBad(HashMap<String, Object> map) {
-		sqlSessionTemplate.insert("recipe.insertBad",map);
+		sqlSessionTemplate.insert("recipe.insertBad", map);
 	}
+
 	/**
-	 * 레시피 번호, 로그인 아이디를 이용 해당 추천/비추천 테이블의
-	 * bad값을 0으로 변경
+	 * 레시피 번호, 로그인 아이디를 이용 해당 추천/비추천 테이블의 bad값을 0으로 변경
 	 */
 	@Override
 	public void updateCancleBad(HashMap<String, Object> map) {
-		sqlSessionTemplate.update("recipe.updateCancleBad",map);
+		sqlSessionTemplate.update("recipe.updateCancleBad", map);
 	}
+
 	/**
-	 * 레시피 번호, 로그인 아이디를 이용 해당 추천/비추천 테이블의
-	 * bad값을 1로, good를 0으로 변경
+	 * 레시피 번호, 로그인 아이디를 이용 해당 추천/비추천 테이블의 bad값을 1로, good를 0으로 변경
 	 */
 	@Override
 	public void updateUpBad(HashMap<String, Object> map) {
-		sqlSessionTemplate.update("recipe.updateUpBad",map);
+		sqlSessionTemplate.update("recipe.updateUpBad", map);
 	}
-	
+
 	/**
-	    * 레시피 즐겨찾기
-	    */
-	   @Override
-	   public void registerFavorite(FavoriteVO fvo) {
-	      sqlSessionTemplate.insert("recipe.registerFavorite", fvo);
-	      
-	   }
+	 * 레시피 즐겨찾기
+	 */
+	@Override
+	public void registerFavorite(FavoriteVO fvo) {
+		sqlSessionTemplate.insert("recipe.registerFavorite", fvo);
 
-	   @Override
-	   public List<FavoriteVO> getFavoriteRecipeList(Map< String, Object> map) {
-	      System.out.println(map);
-	      return sqlSessionTemplate.selectList("recipe.getFavoriteRecipeList", map);
-	   }
-	   
-	   /**
-	    * 즐겨찾기 삭제
-	    */
-	   @Override
-	   public void deleteFavorite(FavoriteVO fvo) {
-	      sqlSessionTemplate.delete("recipe.deleteFavorite", fvo);
-	      
-	   }
-	   
-	   /**
-	    * 아이디로  즐겨찾기한 레시피 번호 리스트 조회
-	    */
-	   @Override
-	   public List<Integer> findRecipeNoById(String id) {
-	      return sqlSessionTemplate.selectList("recipe.findRecipeNoById",id);
-	   }
-	   /**
-	    *레시피 번호로  레시피 hits update
-	    */
-	   @Override
-	   public void updateHitsByRecipeNo(int recipeNo) {
-	       sqlSessionTemplate.update("recipe.updateHitsByRecipeNo", recipeNo);
-	   }
-
-	   /**
-	    * 레시피의 good값을 받아온다
-	    */
-	   @Override
-	   public int getTotalGood(int recipeNo) {
-	      return sqlSessionTemplate.selectOne("recipe.getTotalGood", recipeNo);
-	   }
-	   /**
-	    * 레시피의 bad값을 받아온다
-	    */
-	   @Override
-	   public int getTotalBad(int recipeNo) {
-	      return sqlSessionTemplate.selectOne("recipe.getTotalBad", recipeNo);
-	   }
-	   /**
-	    * id를 이용 해당 아이디의 모든 레시피 번호를 받아온다.
-	    */
-	   @Override
-	   public List<Integer> getMyRecipeList(String id) {
-	      return sqlSessionTemplate.selectList("recipe.getMyRecipeList", id);
-	   }
+	}
 
 	@Override
-	public int getFavoriteRecipe(HashMap<String,Object> map) {
+	public List<FavoriteVO> getFavoriteRecipeList(Map<String, Object> map) {
+		System.out.println(map);
+		return sqlSessionTemplate.selectList("recipe.getFavoriteRecipeList",
+				map);
+	}
+
+	/**
+	 * 즐겨찾기 삭제
+	 */
+	@Override
+	public void deleteFavorite(FavoriteVO fvo) {
+		sqlSessionTemplate.delete("recipe.deleteFavorite", fvo);
+
+	}
+
+	/**
+	 * 아이디로 즐겨찾기한 레시피 번호 리스트 조회
+	 */
+	@Override
+	public List<Integer> findRecipeNoById(String id) {
+		return sqlSessionTemplate.selectList("recipe.findRecipeNoById", id);
+	}
+
+	/**
+	 * 레시피 번호로 레시피 hits update
+	 */
+	@Override
+	public void updateHitsByRecipeNo(int recipeNo) {
+		sqlSessionTemplate.update("recipe.updateHitsByRecipeNo", recipeNo);
+	}
+
+	/**
+	 * 레시피의 good값을 받아온다
+	 */
+	@Override
+	public int getTotalGood(int recipeNo) {
+		return sqlSessionTemplate.selectOne("recipe.getTotalGood", recipeNo);
+	}
+
+	/**
+	 * 레시피의 bad값을 받아온다
+	 */
+	@Override
+	public int getTotalBad(int recipeNo) {
+		return sqlSessionTemplate.selectOne("recipe.getTotalBad", recipeNo);
+	}
+
+	/**
+	 * id를 이용 해당 아이디의 모든 레시피 번호를 받아온다.
+	 */
+	@Override
+	public List<Integer> getMyRecipeList(String id) {
+		return sqlSessionTemplate.selectList("recipe.getMyRecipeList", id);
+	}
+
+	/**
+	    * 
+	    */
+	@Override
+	public int getFavoriteRecipe(HashMap<String, Object> map) {
 		return sqlSessionTemplate.selectOne("recipe.getFavoriteRecipe", map);
+	}
+
+	/**
+	 * 레시피 번호를 이용해서 
+	 * 레시피 번호를 가지고 있는 즐겨찾기 테이블 수 가져온다. 
+	 */
+	@Override
+	public int getFavoriteNoAllList(int recipeNo) {
+		return sqlSessionTemplate.selectOne("recipe.getFavoriteNoAllList",recipeNo);
+	}
+	/**
+	 * 레시피 번호를 이용
+	 * 해당 레시피를 즐겨찾기로 저장한 모든 즐겨찾기 테이블 정보 삭제
+	 */
+	@Override
+	public void deleteFavorites(int recipeNo) {
+		sqlSessionTemplate.delete("recipe.deleteFavorites",recipeNo);
+		
 	}
 }

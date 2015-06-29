@@ -60,7 +60,11 @@
 	<bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJacksonJsonView">
 			<property name="contentType" value="appliction/json;charset=UTF-8"></property>
 	</bean>
-	<!-- 파일다운로드를 위한 view를 설정 -->
-	<!-- <bean name="downloadView" class="org.dedeplz.fridge.controller.DownloadView"></bean> -->
-
+	
+   <mvc:interceptors>
+      <mvc:interceptor>
+         <mvc:mapping path="/**" />
+         <bean class="org.dedeplz.fridge.controller.member.LoginCheckInterceptor" />
+      </mvc:interceptor>
+   </mvc:interceptors>
 </beans>

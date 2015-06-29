@@ -1,7 +1,5 @@
 package org.dedeplz.fridge.model.member;
 
-import java.util.List;
-
 public interface MemberService {
 
    public  MemberVO findById(String id);
@@ -28,7 +26,8 @@ public interface MemberService {
 
    public void updateMemberGrade(MemberVO vo);
    
-   public int getTotalLove(String id);
+    public int getTotalLove(String id);
 
-   public void updateMemberLove(MemberVO mvo);
+     public void updateMemberLove(MemberVO mvo);
+
 }

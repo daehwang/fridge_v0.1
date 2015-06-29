@@ -27,9 +27,7 @@ public interface MemberDAO {
 
    public void levelChange(MemberVO vo);
 
-
-
    public void updateMemberGrade(MemberVO vo);
-
+   
    public void updateMemberLove(MemberVO mvo);
 }

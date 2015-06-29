@@ -161,11 +161,15 @@ public class RecipeServiceImpl implements RecipeService{
 	@Override
 	@Transactional
 	public void deleteRecipeAll(int recipeNo) {
-		int GnBResult=recipeDAO.getGoodAndBadNoCountByRecipeNo(recipeNo);
+		int gnBNoAllCount=recipeDAO.getGoodAndBadNoCountByRecipeNo(recipeNo);
+		int favoriteNoAllCount=recipeDAO.getFavoriteNoAllList(recipeNo);
 		recipeDAO.deleteRecipeFile(recipeNo);
 		recipeDAO.deleteRecipeItem(recipeNo);
-		if(GnBResult!=0){
+		if(gnBNoAllCount!=0){
 			recipeDAO.deleteGoodAndBad(recipeNo);
+		}
+		if(favoriteNoAllCount!=0){
+			recipeDAO.deleteFavorites(recipeNo);
 		}
 		recipeDAO.deleteRecipe(recipeNo);
 	}
@@ -420,9 +424,19 @@ public class RecipeServiceImpl implements RecipeService{
 	      RecipeVO rvo=recipeDAO.getRecipeInfo(recipeNo);
 	      return rvo;
 	   }
+	   /**
+	    * 
+	    */
 	@Override
 	public int getFavoriteRecipe(HashMap<String,Object> map) {
 		System.out.println(map);
 		return recipeDAO.getFavoriteRecipe(map);
+	}
+	/**
+	 * 
+	 */
+	@Override
+	public List<Integer> getMyRecipeList(String id) {
+		return recipeDAO.getMyRecipeList(id);
 	}
 }

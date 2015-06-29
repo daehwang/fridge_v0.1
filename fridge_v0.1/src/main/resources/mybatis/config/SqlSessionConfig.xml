@@ -15,6 +15,7 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 		<typeAlias type="org.dedeplz.fridge.model.recipe.RecipeVO" alias="rvo"/>	
 		<typeAlias type="org.dedeplz.fridge.model.recipe.FileVO" alias="fvo"/>		
 		<typeAlias type="org.dedeplz.fridge.model.recipe.FavoriteVO" alias="rfvo"/>
+		
 	</typeAliases>	
     <!-- sql mapping config xml 을 연결 -->
 	<mappers>

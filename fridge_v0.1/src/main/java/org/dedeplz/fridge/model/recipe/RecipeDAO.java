@@ -48,4 +48,6 @@ public interface RecipeDAO {
 	public int getTotalBad(int recipeNo);
 	public List<Integer> getMyRecipeList(String id);
 	public int getFavoriteRecipe(HashMap<String,Object> map);
+	public int getFavoriteNoAllList(int recipeNo);
+	public void deleteFavorites(int recipeNo);
 }

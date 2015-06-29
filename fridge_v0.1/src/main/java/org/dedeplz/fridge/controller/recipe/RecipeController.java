@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.dedeplz.fridge.controller.member.LoginCheck;
 import org.dedeplz.fridge.model.member.MemberVO;
 import org.dedeplz.fridge.model.recipe.FavoriteVO;
 import org.dedeplz.fridge.model.recipe.FileVO;
@@ -160,6 +161,7 @@ public class RecipeController {
 	 * 
 	 * @return
 	 */
+	@LoginCheck
 	@RequestMapping("registerRecipeForm.do")
 	public String registerRecipeForm() {
 		return "register_recipe";
@@ -173,6 +175,7 @@ public class RecipeController {
 	 * @param items
 	 * @return
 	 */
+	@LoginCheck
 	@RequestMapping("registerRecipe.do")
 	@Transactional
 	public ModelAndView registerRecipe(RecipeVO rvo, String items) {
@@ -206,6 +209,7 @@ public class RecipeController {
 	 * @param model
 	 * @return
 	 */
+	@LoginCheck
 	@RequestMapping("registerResult.do")
 	public String registerResult(RecipeVO rvo, Model model) {
 		rvo = recipeService.getRecipeInfoNoHits(rvo.getRecipeNo());
@@ -222,6 +226,7 @@ public class RecipeController {
 	 * @param session
 	 * @return
 	 */
+	@LoginCheck
 	@RequestMapping("deleteRecipe.do")
 	@Transactional
 	public ModelAndView deleteForm(RecipeVO rvo, HttpSession session) {
@@ -246,6 +251,7 @@ public class RecipeController {
 	 * @param model
 	 * @return
 	 */
+	@LoginCheck
 	@RequestMapping("updateForm.do")
 	public String updateForm(RecipeVO rvo, Model model) {
 		rvo = recipeService.getRecipeInfoNoHits(rvo.getRecipeNo());
@@ -264,6 +270,7 @@ public class RecipeController {
 	 * @param request
 	 * @param response
 	 */
+	@LoginCheck
 	@RequestMapping(value = "multiplePhotoUpload.do", method = {
 			RequestMethod.GET, RequestMethod.POST })
 	public void multiplePhotoUpload(HttpServletRequest request,
@@ -350,6 +357,7 @@ public class RecipeController {
 	    * @param rvo
 	    * @return
 	    */
+		@LoginCheck
 	   @RequestMapping("updateRecipe.do")
 	   @Transactional
 	   public ModelAndView updateRecipe(RecipeVO rvo,String items){
@@ -379,6 +387,7 @@ public class RecipeController {
 		 * @param goodCase
 		 * @return
 		 */
+		@LoginCheck
 		@RequestMapping("updateGood.do")
 		@ResponseBody
 		public void updateGood(MemberVO mvo,RecipeVO rvo,String goodCase){
@@ -403,6 +412,7 @@ public class RecipeController {
 		 * @param badCase
 		 * @return
 		 */
+		@LoginCheck
 		@RequestMapping("updateBad.do")
 		@ResponseBody
 		public void updateBad(MemberVO mvo,RecipeVO rvo,String badCase){
@@ -448,6 +458,7 @@ public class RecipeController {
 		/**
 		    * 레시피 즐겨찾기 등록
 		    */
+		@LoginCheck
 		@RequestMapping(value="registerFavorite.do", method=RequestMethod.POST )
 		@ResponseBody
 		public Object registerFavorite(FavoriteVO fvo, HttpSession session){
@@ -471,6 +482,7 @@ public class RecipeController {
 		    * @param session
 		    * @return
 		    */
+			@LoginCheck
 		   @RequestMapping("favoriteRecipeList.do")
 		   public String getFavoriteRecipeList(HttpSession session, Model model, String pageNo){
 		      MemberVO mvo = (MemberVO) session.getAttribute("mvo");
@@ -489,6 +501,7 @@ public class RecipeController {
 		    * @param fvo
 		    * @return
 		    */
+			@LoginCheck
 		   @RequestMapping(value="deleteFavorite.do", method=RequestMethod.POST)
 		   @ResponseBody
 		   public Object deleteFavorite(FavoriteVO fvo, String pageNo){
@@ -506,6 +519,7 @@ public class RecipeController {
 		    * @param session
 		    * @return
 		    */
+			@LoginCheck
 		   @RequestMapping("favoriteView.do")
 		   public String favoriteView(Model model, String pageNo, HttpSession session){
 		      System.out.println("asdf");
@@ -540,6 +554,7 @@ public class RecipeController {
 		       * @param items
 		       * @return
 		       */
+			@LoginCheck
 		      @RequestMapping("recipeCommentForm.do")
 		      public String recipeCommentForm(){        
 		         return"posting/commentRecipeForm";
