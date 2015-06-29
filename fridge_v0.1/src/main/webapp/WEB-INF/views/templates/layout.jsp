@@ -5,6 +5,14 @@
 <!DOCTYPE html>
 <html>
 <head>
+<style type="text/css">
+img#goodImg {
+    vertical-align: text-top;
+}
+img#badImg {
+    vertical-align: text-top;
+} 
+</style>
 <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -326,6 +334,8 @@
                }
                $("#updForm").submit();
             });   
+            var goodImg="<img src='${initParam.root}/img/추천.jpg'>&nbsp;&nbsp;";
+            var badImd="<img src='${initParam.root}/img/비추천.jpg'>&nbsp;&nbsp;";
       		/* 좋아요 추천 */
             $("#gogo").on("click","#totalGood",function(){
             	if("${sessionScope.mvo.id}"==""){
@@ -349,7 +359,7 @@
             							data:"id=${sessionScope.mvo.id}&recipeNo="+$("#gnbUseRecipeNo").val()+"&goodCase=0",
             							success:function(data){           
             								totalGood+=1;
-            								$("#totalGood").html("추천"+totalGood);
+            								$("#totalGood").html(goodImg+totalGood);
             							}//callback
             						});//ajax
             					}//if
@@ -361,7 +371,7 @@
             							data:"id=${sessionScope.mvo.id}&recipeNo="+$("#gnbUseRecipeNo").val()+"&goodCase=1",
            								success:function(data){       
            									totalGood+=-1;
-           									$("#totalGood").html("추천"+totalGood);
+           									$("#totalGood").html(goodImg+totalGood);
            								}//callback
            							});//ajax	
            						}//if
@@ -373,7 +383,7 @@
             							data:"id=${sessionScope.mvo.id}&recipeNo="+$("#gnbUseRecipeNo").val()+"&goodCase=2",
             							success:function(data){        
             								totalGood+=1;
-            								$("#totalGood").html("추천"+totalGood);	
+            								$("#totalGood").html(goodImg+totalGood);	
             							}//callback
             						});//ajax
             					}//if
@@ -386,8 +396,8 @@
             							success:function(data){       
             								totalGood+=1;
             								totalBad+=-1;
-            								$("#totalGood").html("추천"+totalGood);	
-            								$("#totalBad").html("비추천"+totalBad);
+            								$("#totalGood").html(goodImg+totalGood);	
+            								$("#totalBad").html(badImg+totalBad);
             							}//callback
             						}); //ajax
            						} //if
@@ -419,7 +429,7 @@
             							data:"id=${sessionScope.mvo.id}&recipeNo="+$("#gnbUseRecipeNo").val()+"&badCase=0",
             							success:function(data){           
             								totalBad+=1;
-            								$("#totalBad").html("비추천"+totalBad);
+            								$("#totalBad").html(badImg+totalBad);
             							}//callback
             						});//ajax
             					}//if
@@ -431,7 +441,7 @@
             							data:"id=${sessionScope.mvo.id}&recipeNo="+$("#gnbUseRecipeNo").val()+"&badCase=1",
            								success:function(data){       
            									totalBad+=-1;
-           									$("#totalBad").html("비추천"+totalBad);
+           									$("#totalBad").html(badImg+totalBad);
            								}//callback
            							});//ajax	
            						}//if
@@ -443,7 +453,7 @@
             							data:"id=${sessionScope.mvo.id}&recipeNo="+$("#gnbUseRecipeNo").val()+"&badCase=2",
             							success:function(data){        
             								totalBad+=1;
-            								$("#totalBad").html("비추천"+totalBad);	
+            								$("#totalBad").html(badImg+totalBad);	
             							}//callback
             						});//ajax
             					}//if
@@ -456,8 +466,8 @@
             							success:function(data){       
             								totalGood+=-1;
             								totalBad+=1;
-            								$("#totalGood").html("추천"+totalGood);	
-            								$("#totalBad").html("비추천"+totalBad);
+            								$("#totalGood").html(goodImg+totalGood);	
+            								$("#totalBad").html(badImg+totalBad);
             							}//callback
             						}); //ajax
            						} //if
@@ -501,14 +511,10 @@
 									favoriteInfo += "<td>" + favorite.recipeTitle + "</td></tr>";
 								});
 								$("#favoriteView").html(favoriteInfo);
-								
-								
 							}
 						});// ajax
 					}
 					});//foreach 
-			
-					  
 					  if($("input:checkbox[name=chkBox]:checked").val()==null){
 						  alert("삭제할 레시피를 선택해주세요!!!");
 					  }
@@ -516,40 +522,29 @@
 				
 				/* 즐겨찾기 삭제 이벤트 */
 				$(document).on("click","#favoriteImg2",function(){
-					var recipeNo = $("#gnbUseRecipeNo").val();
-					
-
+					var recipeNo = $("#gnbUseRecipeNo").val();		
 						$.ajax({
 							type:"POST",
 							url:"deleteFavorite.do",				
 							data:"memberId=${sessionScope.mvo.id}&recipeNo=" + recipeNo,
 							success:function(result){ 
-								alert(result.list);	 
-									 var info = "<img src='${initParam.root}/img/star12345.png' id='favoriteImg1'></div>";
+									 var info = "<img src='${initParam.root}/img/star12345.png' id='favoriteImg1' width='50' height='50'></div>";
 										$("#favoriteView").html(info);
-								
-								
-								
 							}
 						});// ajax 
-					
 	            });
 	            
 	           /*  즐겨찾기 등록 */
 	            $(document).on("click","#favoriteImg1",function(){
 					var recipeNo = $("#gnbUseRecipeNo").val();
-					//if(confirm("즐겨찾기에 등록하시겠습니까?")){
-
 						$.ajax({
 							type:"POST",
 							url:"registerFavorite.do",				
 							data:"memberId=${sessionScope.mvo.id}&recipeNo=" + recipeNo,
 							success:function(result){ 
-								 if(result=="fail"){
-									 
-								}else{
-									 var info = "<img src='${initParam.root}/img/star123.png' id='favoriteImg2'></div>";
-										$("#favoriteView").html(info);
+								 if(result!="fail"){
+									 var info = "<img src='${initParam.root}/img/star123.png' id='favoriteImg2' width='50' height='50'></div>";
+									$("#favoriteView").html(info);
 								}
 								
 								
@@ -577,9 +572,11 @@ function testAlert(path) {
         success:function(data){     
         	totalGood=data.totalGood;
         	totalBad=data.totalBad;
+        	
         $("#gogo").html(" <h2 class='heading'>"+data.rvo.title+"</h2><p>"+data.tag+"<br>요리시간 : "+data.rvo.cookingTime+"분  조회수 : " +data.rvo.hits+"</p>"
-                +data.rvo.contents+"<button type='button' id='totalGood' value='"+data.totalGood+"'>추천"+data.totalGood+"</button>&nbsp;"
-        			+"<button type='button' id='totalBad' value='"+data.totalBad+"'>비추천"+data.totalBad+"</button><br><br>"
+                +data.rvo.contents
+        			+"<span id='totalGood' value='"+data.totalGood+"' style='font-size: 20px;'><img src='${initParam.root}/img/추천.jpg' id='goodImg'>&nbsp;&nbsp;"+data.totalGood+"</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+        			+"<span id='totalBad' value='"+data.totalBad+"' style='font-size: 20px;'><img src='${initParam.root}/img/비추천.jpg' id='badImg'>&nbsp;&nbsp;"+data.totalBad+"</span><br><br>"
         			 +"<a button type='button' class='btn btn-success'   id='commentPopUp' >댓글달기</a>  "	
         			+"<input type='hidden' id='gnbUseRecipeNo' value='"+data.rvo.recipeNo+"'>"
         			+"<input type='hidden' id='gnbUseMemberId' value='"+data.rvo.memberId+"'>"	
@@ -594,7 +591,7 @@ function testAlert(path) {
         	if(data.favoriteInfo==0){
 	           $("#gogo").append(
 	        		"<button type='button' class='btn btn-primary' data-dismiss='modal'>"+"<i class='fa fa-times'></i> Close</button><br><br>"
-	        		+ "<div id='favoriteView'><img src='${initParam.root}/img/star12345.png' id='favoriteImg1'></div>"	
+	        		+ "<div id='favoriteView'><img src='${initParam.root}/img/star12345.png' id='favoriteImg1'width='50' height='50'></div>"	
 	           );
         	}else{
         		  $("#gogo").append(
@@ -610,8 +607,6 @@ function testAlert(path) {
      
 }
 </script>
-
-
 
 </body>
 </html>
