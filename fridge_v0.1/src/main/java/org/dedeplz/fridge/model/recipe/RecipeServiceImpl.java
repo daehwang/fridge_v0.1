@@ -14,6 +14,7 @@ import java.util.StringTokenizer;
 
 import javax.annotation.Resource;
 
+import org.dedeplz.fridge.model.member.MemberVO;
 import org.dedeplz.fridge.model.recipe.paging.FavoriteListVO;
 import org.dedeplz.fridge.model.recipe.paging.PagingBean;
 import org.springframework.stereotype.Service;
@@ -26,10 +27,140 @@ public class RecipeServiceImpl implements RecipeService{
 	private RecipeDAO recipeDAO;
 	@Resource(name="uploadPath")
 	private String path;
+	
+	/**
+	 * 등록된 모든 레시피의 번호를 받아온다.
+	 */
+	@Override
+	public List<String> getAllRecipeNo() {
+		return recipeDAO.getAllRecipeNo();
+	}
+	
+	/**
+	 * home.do 에서 사용
+	 * 레시피 번호를 목록으로 받아서
+	 * 각 레시피의 정보와 마지막 사진,태그,좋아요 수
+	 * 를 받아온다
+	 */
+	@Override
+	public List<HashMap<String, Object>> getFileLastNamePath() {
+		List<String> recipeNoList =recipeDAO.getAllRecipeNo();
+		List<HashMap<String,Object>> fileLastNamePath = new ArrayList<HashMap<String,Object>>();
+		for (int i = 0; i < recipeNoList.size(); i++) {
+			String fileLastPath =recipeDAO.getFileLastNamePath(recipeNoList.get(i));
+			 RecipeVO rvo=getRecipeInfoNoHits(Integer.parseInt(recipeNoList.get(i)));
+			 String tag=getItemTag(Integer.parseInt(recipeNoList.get(i)));
+			 int goodPoint =recipeDAO.getTotalGood(Integer.parseInt(recipeNoList.get(i)));
+			 HashMap<String, Object> map=new HashMap<String, Object>();
+	         map.put("rvo",rvo);
+	         map.put("fileLastPath", fileLastPath);
+	         map.put("tag", tag);
+	         map.put("goodPoint",goodPoint);
+	         fileLastNamePath.add(map);
+		}
+		return fileLastNamePath;
+	}
+
+	/**
+	 * home.do 에서 사용
+	 * top3에 해당하는 레시피 목록을 받아서
+	 * 해당 레시피들의 정보(레시피 정보,마지막 사진 주소,
+	 * 태그,좋아요 수를 받아온다.)
+	 */
+	@Override
+	public List<HashMap<String, Object>> getTopFileLastNamePath() {
+		List<String> topRecipeNoList =getTopPointRecipeList();
+		List<HashMap<String,Object>> topFileLastNamePath = new ArrayList<HashMap<String,Object>>();
+		for (int i = 0; i < topRecipeNoList.size(); i++) {
+			String fileLastPath =recipeDAO.getFileLastNamePath(topRecipeNoList.get(i));
+			 RecipeVO rvo=getRecipeInfoNoHits(Integer.parseInt(topRecipeNoList.get(i)));
+			 String tag=getItemTag(Integer.parseInt(topRecipeNoList.get(i)));
+			 int goodPoint =recipeDAO.getTotalGood(Integer.parseInt(topRecipeNoList.get(i)));
+			 System.out.println("goodPoint:"+goodPoint);
+			 HashMap<String, Object> map=new HashMap<String, Object>();
+	         map.put("rvo",rvo);
+	         map.put("fileLastPath", fileLastPath);
+	         map.put("tag", tag);
+	         map.put("goodPoint",goodPoint);
+	         topFileLastNamePath.add(map);
+		}
+		return topFileLastNamePath;
+	}
+
+	  /**
+	    *  (No Hits!!)레시피 번호를 이용해서 해당 레시피의 정보를 받아온다
+	    */
+	   @Override
+	   public RecipeVO getRecipeInfoNoHits(int recipeNo) {
+	      RecipeVO rvo=recipeDAO.getRecipeInfo(recipeNo);
+	      return rvo;
+	   }
+	   
+	   /**
+		 * 레시피 아이템을 받아와서 테그 형식으로 변환
+		 */
+		@Override
+		public String getItemTag(int recipeNo) {
+			List<String> itemNoList=recipeDAO.getItemNoList(recipeNo);
+			String tag="";
+			for(int i=0;i<itemNoList.size();i++){
+				int itemNo=Integer.parseInt(itemNoList.get(i));
+				String itemName=recipeDAO.getItemNameByItemNo(itemNo);
+				tag+="#"+itemName;
+			}
+			return tag;
+		}  
+	
+	/**
+	 * searchRecipe.do에서 사용
+	 * 입력한 테크를 이용해 레시피 번호를 받아온다
+	 * 레시피 번호를 이용해서 해당 레시피의 정보
+	 * 마지막 사진 주소,태그,좋아요 수를 받아온다
+	 */
+	@Override
+	public Map<String, Object> getSearchRecipeInfo(String items) {
+		 List<String> recipeNoList = getRecipeNoByItem(items);
+	        List<HashMap<String,Object>> fileLastNamePath = new ArrayList<HashMap<String,Object>>();
+	       for (int i = 0; i < recipeNoList.size(); i++) {
+	          String fileLastPath = recipeDAO.getFileLastNamePath(recipeNoList.get(i));
+	           RecipeVO rvo=getRecipeInfoNoHits(Integer.parseInt(recipeNoList.get(i)));
+	           String tag=getItemTag(Integer.parseInt(recipeNoList.get(i)));
+	           int goodPoint = recipeDAO.getTotalGood(Integer.parseInt(recipeNoList.get(i)));
+	           HashMap<String, Object> map=new HashMap<String, Object>();
+	             map.put("rvo",rvo);
+	             map.put("fileLastPath", fileLastPath);
+	             map.put("tag", tag);
+	             map.put("goodPoint",goodPoint);
+	             fileLastNamePath.add(map);
+	       }
+	       Map<String, Object> resultMap = new HashMap<String, Object>();
+	       resultMap.put("recipeNoList", recipeNoList.size());
+	       resultMap.put("filePath",fileLastNamePath);
+		return resultMap;
+	}
+	
+	/**
+	 * 레시피 no를 태크,레시피의 모든 파일패스,
+	 * 모든 good과 모든 bad의 수를 받아온다
+	 */
+	@Override
+	public Map<String, Object> getShowContentsInfo(int recipeNo) {
+		Map<String, Object> resultMap =new HashMap<String, Object>();
+		List<String> allFilePath = recipeDAO.getAllFilePahtByRecipeNo(recipeNo);
+		String tag = getItemTag(recipeNo);
+		int totalGood=recipeDAO.getTotalGood(recipeNo);
+		int totalBad=recipeDAO.getTotalBad(recipeNo);
+		resultMap.put("tag",tag);
+		resultMap.put("allFilePath", allFilePath.toString());
+		resultMap.put("totalGood", totalGood);
+		resultMap.put("totalBad", totalBad);
+		return resultMap;
+	}
+	
+	
 	/**
 	 * 태그를 이용한 레시피 검색
 	 */
-	@Override
 	public List<String> getRecipeNoByItem(String items) {
 		StringTokenizer st = new StringTokenizer(items,"#"); 	
 		List<String> recipeList=null;
@@ -81,7 +212,6 @@ public class RecipeServiceImpl implements RecipeService{
 	/**
 	 * 아이템 이름으로 해당 아이템 번호 받아온다. 
 	 */
-	@Override
 	public int getItemNo(String itemName) {
 		int no=recipeDAO.getItemNo(itemName);
 		return no;
@@ -135,33 +265,22 @@ public class RecipeServiceImpl implements RecipeService{
 		}
 	}
 	/**
-	 * 레시피 아이템을 받아와서 테그 형식으로 변환
-	 */
-	@Override
-	public String getItemTag(int recipeNo) {
-		List<String> itemNoList=recipeDAO.getItemNoList(recipeNo);
-		String tag="";
-		for(int i=0;i<itemNoList.size();i++){
-			int itemNo=Integer.parseInt(itemNoList.get(i));
-			String itemName=recipeDAO.getItemNameByItemNo(itemNo);
-			tag+="#"+itemName;
-		}
-		return tag;
-	}
-	/**
-	 * 레시피 번호를 이용 해당 레시피의 모든 사진 path를 받아온다.
-	 */
-	@Override
-	public List<String> getFilePath(int recipeNo) {
-		List<String> list=recipeDAO.getFilePath(recipeNo);
-		return list;
-	}
-	/**
-	 * 레시피 번호를 이용해서 해당 레시피의 모든 정보 삭제(레시피 테이블, 레시피 아이템 테이블, 파일 테이블,추천테이블)
+	 * 레시피 번호를 이용해서 해당 레시피의 모든 정보 삭제
+	 * (레시피 테이블, 레시피 아이템 테이블, 파일 테이블,추천테이블,아이디 디렉토리 내 사진)
 	 */
 	@Override
 	@Transactional
-	public void deleteRecipeAll(int recipeNo) {
+	public void deleteRecipeAll(String id,int recipeNo) {
+		List<String> list = recipeDAO.getFileName(recipeNo);
+		File file = new File(path + "\\" + id);
+		File f[] = file.listFiles();
+		for (int i = 0; i < list.size(); i++) {
+			for (int y = 0; y < f.length; y++) {
+				if (f[y].getName().equals(list.get(i))) {
+					f[y].delete();
+				}//if
+			}//for
+		}//for
 		int gnBNoAllCount=recipeDAO.getGoodAndBadNoCountByRecipeNo(recipeNo);
 		int favoriteNoAllCount=recipeDAO.getFavoriteNoAllList(recipeNo);
 		recipeDAO.deleteRecipeFile(recipeNo);
@@ -174,27 +293,8 @@ public class RecipeServiceImpl implements RecipeService{
 		}
 		recipeDAO.deleteRecipe(recipeNo);
 	}
-	/**
-	 * 등록된 모든 레시피의 번호를 받아온다.
-	 */
-	@Override
-	public List<String> getAllRecipeNo() {
-		return recipeDAO.getAllRecipeNo();
-	}
-	/**
-	 * 레시피 번호를 이용 해당 레시피의 마지막 사진의 파일 번호를 받아온다.
-	 */
-	@Override
-	public String getFileLastNo(String recipeNo) {
-		return recipeDAO.getFileLastNo(recipeNo);
-	}
-	/**
-	 * 파일 번호를 이용 해당 레시피의 사진 path를 받아온다.
-	 */
-	@Override
-	public String getFileLastNamePath(String fileLastNo) {
-		return recipeDAO.getFileLastNamePath(fileLastNo);
-	}
+	
+	
 	/**
 	 * 사진의 path를 이용해 해당 레시피의 번호를 받아온다.
 	 */
@@ -203,43 +303,21 @@ public class RecipeServiceImpl implements RecipeService{
 		return recipeDAO.getRecipeNoByPath(filePath);
 	}
 	/**
-	 * 레시피 번호로 해당 레시피의 모든 사진 path를 받아온다. 
-	 */
-	@Override
-	public List<String> getAllFilePahtByRecipeNo(int recipeNo) {
-		return recipeDAO.getAllFilePahtByRecipeNo(recipeNo);
-	}
-	/**
 	 * 레시피 번호를 이용해 해당 레시피의 모든 사진 이름을 받아온다.
 	 */
-	@Override
+/*	@Override
 	public List<String> getFileName(int recipeNo) {
 		List<String> list=recipeDAO.getFileName(recipeNo);
 		return list;
-	}
+	}*/
 	/**
 	 * 레시피 수정
 	 */
 	@Override
 	public void updateRecipe(RecipeVO rvo) {
-		deleteRecipeFile(rvo.getRecipeNo());
-	    deleteRecipeItem(rvo.getRecipeNo());
+		recipeDAO.deleteRecipeFile(rvo.getRecipeNo());
+	    recipeDAO.deleteRecipeItem(rvo.getRecipeNo());
 		recipeDAO.updateRecipe(rvo);
-	}
-	/**
-	 * 레시피 수정 시 해당 레시피의 기존 recipe_file 테이블 정보 삭제
-	 */
-	@Override
-	public void deleteRecipeFile(int recipeNo) {
-		recipeDAO.deleteRecipeFile(recipeNo);
-	}
-	/**
-	 * 레시피 수정 시 해당 레시피의 기존 recipe_item 테이블 정보 삭제
-	 */
-	@Override
-	public void deleteRecipeItem(int recipeNo) {
-		recipeDAO.deleteRecipeItem(recipeNo);
-		
 	}
 	/**
 	 * 태크 값을 이용해서 recipe_item 테이블에 정보 입력
@@ -261,129 +339,31 @@ public class RecipeServiceImpl implements RecipeService{
 		 }
 	}
 	/**
-	 * 레시피 번호를 이용 해당 레시피의 모든 good 을 조회 후
-	 * good
+	   * 로그인 한 사용자가 레시피를 즐겨찾기 등록
 	 */
 	@Override
-	public int getTotalGood(int recipeNo) {
-		return  recipeDAO.getTotalGood(recipeNo);
-		
-	}
-	/**
-	 * 레시피 번호를 이용 해당 레시피의 모든 bad 를 조회 후
-	 * bad의 총합계산
-	 */
-	@Override
-	public int getTotalBad(int recipeNo) {
-		return recipeDAO.getTotalBad(recipeNo);
-		
-	}
-	/**
-	 * 레시피의 번호와 레시피 작성자 아이디를 이용
-	 * 해당 good값을 얻어온다.
-	 */
-	@Override
-	public int getGood(HashMap<String, Object> map) {
-		return recipeDAO.getGood(map);
-	}
-	/**
-	 * 레시피의 번호와 레시피 작성자 아이디를 이용
-	 * 해당 bad값을 얻어온다.
-	 */
-	@Override
-	public int getBad(HashMap<String, Object> map) {
-		return recipeDAO.getBad(map);
-	}
-	/**
-	 * 레시피의 번호와 로그인 아이디를 이용
-	 * 추천 비추천 테이블이 존재 유무를 count로 확인
-	 */
-	@Override
-	public int getGoodAndBadNoCountByRecipeNoAndMemberId(HashMap<String, Object> map) {
-		return recipeDAO.getGoodAndBadNoCountByRecipeNoAndMemberId(map);
-	}
-	/**
-	 * 추천 버튼 클릭 시 
-	 * 추천 비추천 테이블이 없는 경우
-	 * 추천 비추천 테이블 생성 
-	 * good에 1을 입력
-	 */
-	@Override
-	public void insertGood(HashMap<String, Object> map) {
-		recipeDAO.insertGood(map);
-	}
-	/**
-	 * 추천 버튼 클릭 시 이미 추천한 경우
-	 * good을 0으로 업데이트
-	 */
-	@Override
-	public void updateCancleGood(HashMap<String, Object> map) {
-		recipeDAO.updateCancleGood(map);
-	/**
-	 * 추천 버튼 클릭 시 
-	 * good을 1로 업데이트	
-	 */
-	}
-	@Override
-	public void updateUpGood(HashMap<String, Object> map) {
-		recipeDAO.updateUpGood(map);
-	}
-	/**
-	 * 비추천 버튼 클릭 시 
-	 * 추천 비추천 테이블이 없는 경우
-	 * 추천 비추천 테이블 생성
-	 * bad에 1을 입력
-	 */
-	@Override
-	public void insertBad(HashMap<String, Object> map) {
-		recipeDAO.insertBad(map);
-	/**
-	 * 비추천 버튼 클릭 시 이미 비추천한 경우
-	 * bad을 0으로 업데이트	
-	 */
-	}
-	@Override
-	public void updateCancleBad(HashMap<String, Object> map) {
-		recipeDAO.updateCancleBad(map);
-		
-	}
-	/**
-	 * 비추천 버튼 클릭 시 
-	 * bad을 1로 업데이트	 
-	 */
-	@Override
-	public void updateUpBad(HashMap<String, Object> map) {
-		recipeDAO.updateUpBad(map);
-	}
-	
-	   /**
-	    * 로그인 한 사용자가 레시피를 즐겨찾기 등록
-	    */
-		@Override
-		public String registerFavorite(FavoriteVO fvo) {
-			String str = "fail";
-			System.out.println("registerFavorites");
-			if(getRecipeNoById(fvo) == -1){
-				recipeDAO.registerFavorite(fvo);
-				str = "ok";
-				
-			}
-			return str;
+	public String registerFavorite(FavoriteVO fvo) {
+		String str = "fail";
+		if(getRecipeNoById(fvo) == -1){
+			recipeDAO.registerFavorite(fvo);
+			str = "ok";	
 		}
-	   /**
-	    * recipeNo 중복 체크 
-	    */
-	   public int getRecipeNoById(FavoriteVO fvo){
-	      int  index = -1;
-	      List<Integer> recipeList = recipeDAO.findRecipeNoById(fvo.getMemberId());
-	      System.out.println(recipeList);
-	      for(int i = 0; i < recipeList.size(); i++){
-	         if(fvo.getRecipeNo() == recipeList.get(i)){
-	            index = i;
-	         }
-	      }
-	      return index;
-	   }
+		return str;
+	}
+	/**
+	 * recipeNo 중복 체크 
+	 */
+	 public int getRecipeNoById(FavoriteVO fvo){
+		int  index = -1;
+	    List<Integer> recipeList = recipeDAO.findRecipeNoById(fvo.getMemberId());
+	    System.out.println(recipeList);
+	    for(int i = 0; i < recipeList.size(); i++){
+	        if(fvo.getRecipeNo() == recipeList.get(i)){
+	           index = i;
+	        }
+	    }
+	    return index;
+	}
 	   @Override
 	   public FavoriteListVO getFavoriteRecipeList(String pageNo, String id) {
 	      if(pageNo==null||pageNo=="") {
@@ -417,14 +397,7 @@ public class RecipeServiceImpl implements RecipeService{
 	      RecipeVO rvo=recipeDAO.getRecipeInfo(recipeNo);
 	      return rvo;
 	   }
-	   /**
-	    *  (No Hits!!)레시피 번호를 이용해서 해당 레시피의 정보를 받아온다
-	    */
-	   @Override
-	   public RecipeVO getRecipeInfoNoHits(int recipeNo) {
-	      RecipeVO rvo=recipeDAO.getRecipeInfo(recipeNo);
-	      return rvo;
-	   }
+	 
 	   /**
 	    * 
 	    */
@@ -454,15 +427,10 @@ public class RecipeServiceImpl implements RecipeService{
 			pointOfRecipeList.add(tvo);
 		}
 		Collections.sort(pointOfRecipeList, new NoDescCompare());
-		System.out.printf("\n\n===== 숫자 내림 차순 정렬 =====\n");
-		/*for (TopRecipeVO temp : pointOfRecipeList) {
-			System.out.println(temp);
-		}*/
+		
 		for (int i = 0; i < 3; i++) {
 			topList.add(String.valueOf(pointOfRecipeList.get(i).getRecipeNo()));
-			System.out.println("내림차순"+String.valueOf(pointOfRecipeList.get(i).getTotalGood())	);
 		}
-		System.out.println("결과 리스트" + list);
 		return topList;
 		
 	}
@@ -478,9 +446,96 @@ public class RecipeServiceImpl implements RecipeService{
 		 */
 		@Override
 		public int compare(TopRecipeVO arg0, TopRecipeVO arg1) {
-			// TODO Auto-generated method stub
 			return arg0.getTotalGood() > arg1.getTotalGood() ? -1 : arg0.getTotalGood() < arg1.getTotalGood() ? 1:0;
 		}
- 
 	}
+	@Override
+	public Map<String, Object> getUpdateFormInfo(int recipeNo) {
+		Map<String ,Object> map=new HashMap<String, Object>();
+		RecipeVO rvo = getRecipeInfoNoHits(recipeNo);
+		String tag = getItemTag(recipeNo);
+		map.put("rvo", rvo);
+		map.put("tag", tag);
+		return map;
+	}
+	/**
+	 * 아이디와 레시피 no,goodCase를 이용해서
+	 * good정보 수정
+	 */
+	@Override
+	public void updateGood(String memberId, int recipeNo,String goodCase) {	
+		HashMap<String, Object> map=new HashMap<String, Object>();
+		map.put("memberId", memberId);
+		map.put("recipeNo", recipeNo);
+		if(goodCase.equals("0")){
+			recipeDAO.insertGood(map);
+		}else if(goodCase.equals("1")){
+			recipeDAO.updateCancleGood(map);
+		}else if(goodCase.equals("2")){
+			recipeDAO.updateUpGood(map);
+		}
+	}
+	/**
+	 * 아이디와 레시피 no,badCase를 이용해서
+	 * bad정보 수정
+	 */
+	@Override
+	public void updateBad(String memberId, int recipeNo, String badCase) {
+		HashMap<String, Object> map=new HashMap<String, Object>();
+		map.put("memberId", memberId);
+		map.put("recipeNo", recipeNo);
+		if(badCase.equals("0")){
+			recipeDAO.insertBad(map);
+		}else if(badCase.equals("1")){
+			recipeDAO.updateCancleBad(map);
+		}else if(badCase.equals("2")){
+			recipeDAO.updateUpBad(map);
+		}
+	}
+	/**
+	 * 추천 비추천 테이블 유무 체크 및
+	 * good bad 값 호출
+	 */
+	@Override
+	public HashMap<String, Object> checkGoodAndBad(String memberId, int recipeNo) {
+		HashMap<String, Object> map=new HashMap<String, Object>();
+		map.put("memberId", memberId);
+		map.put("recipeNo", recipeNo);
+		int count=recipeDAO.getGoodAndBadNoCountByRecipeNoAndMemberId(map);
+		int good=recipeDAO.getGood(map);
+		int bad=recipeDAO.getBad(map);
+		HashMap<String,Object> goodAndBadResult=new HashMap<String, Object>();
+		goodAndBadResult.put("count", count);
+		goodAndBadResult.put("good",good);
+		goodAndBadResult.put("bad", bad);
+		return goodAndBadResult;
+	}
+	
+	@Override
+	public List<HashMap<String, Object>> getFavoriteInfo(String pageNo,
+			MemberVO mvo) {
+		 FavoriteListVO fvo = getFavoriteRecipeList(pageNo, mvo.getId());
+	     List<FavoriteVO> fList = fvo.getList();
+	     List<HashMap<String,Object>> fileLastNamePath = new ArrayList<HashMap<String,Object>>();
+	     for (int i = 0; i < fList.size(); i++) {
+	    	 String fileLastPath = recipeDAO.getFileLastNamePath(Integer.toString(fList.get(i).getRecipeNo()));
+	    	 RecipeVO rvo=getRecipeInfo(fList.get(i).getRecipeNo());
+	    	 String tag=getItemTag(fList.get(i).getRecipeNo());
+		     HashMap<String, Object> map=new HashMap<String, Object>();
+	         	map.put("rvo",rvo);
+	            map.put("fileLastPath", fileLastPath);
+	            map.put("tag", tag);
+	            fileLastNamePath.add(map);
+	         }
+		return fileLastNamePath;
+	}
+
+
+
+	
+	
+	
+	
+	
+	
 }

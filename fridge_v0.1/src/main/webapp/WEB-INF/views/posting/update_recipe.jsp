@@ -8,18 +8,18 @@
 	<form method=post action="updateRecipe.do" id="updateForm">
 		<table class="content">
 			<tr>
-				<td><b>글번호 : ${rvo.recipeNo } </b> 
-				<input type="hidden"	name="recipeNo" value=${rvo.recipeNo } /></td>
+				<td><b>글번호 : ${updateInfo.rvo.recipeNo } </b> 
+				<input type="hidden"	name="recipeNo" value=${updateInfo.rvo.recipeNo } /></td>
 				<td colspan="2"><b>
-				&nbsp;&nbsp;타이틀 : <input type="text" name="title" value=${rvo.title } size="40"/></b></td>
+				&nbsp;&nbsp;타이틀 : <input type="text" name="title" value=${updateInfo.rvo.title } size="40"/></b></td>
 			</tr>
 			<tr>
 				<td><font size="2">작성자 : <input type=text name=nick
-						value="${rvo.nick}" readonly /></font></td>
-				<td>&nbsp;&nbsp;작성일시 : ${rvo.postDate }</td>
+						value="${updateInfo.rvo.nick}" readonly /></font></td>
+				<td>&nbsp;&nbsp;작성일시 : ${updateInfo.rvo.postDate }</td>
 				<td  align="right">
 				요리시간 : <select name="cookingTime" id="cookingTime">
-						<option value="${requestScope.rvo.cookingTime}">${requestScope.rvo.cookingTime}</option>
+						<option value="${requestScope.updateInfo.rvo.cookingTime}">${requestScope.updateInfo.rvo.cookingTime}</option>
 						<option value="10">10분</option>
 						<option value="15">15분</option>
 						<option value="20">20분</option>
@@ -31,9 +31,9 @@
 			</tr>
 			<tr>
 				<td colspan="3"><br> <textarea name="contents"
-						id="contents" rows="24" style="width: 100%;"> ${rvo.contents }</textarea>
+						id="contents" rows="24" style="width: 100%;"> ${updateInfo.rvo.contents }</textarea>
 					<br> 태그 : <input type="text" name="items" id="items" size="65"
-					value="${tag}"></td>
+					value="${updateInfo.tag}"></td>
 			</tr>
 			<tr>
 				<td colspan="3"><br>

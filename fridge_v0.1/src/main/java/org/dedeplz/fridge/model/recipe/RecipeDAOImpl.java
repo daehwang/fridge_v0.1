@@ -95,16 +95,6 @@ public class RecipeDAOImpl implements RecipeDAO {
 		return sqlSessionTemplate.selectOne("recipe.getItemNameByItemNo",
 				itemNo);
 	}
-
-	/**
-	 * 해당 레시피의 사진 주소 찾기
-	 */
-	@Override
-	public List<String> getFilePath(int recipeNo) {
-		return sqlSessionTemplate
-				.selectList("recipeFile.getFilePath", recipeNo);
-	}
-
 	/**
 	 * 레시피 삭제
 	 */
@@ -138,21 +128,12 @@ public class RecipeDAOImpl implements RecipeDAO {
 	}
 
 	/**
-	 * 마지막 사진 번호
-	 */
-	@Override
-	public String getFileLastNo(String recipeNo) {
-		return sqlSessionTemplate.selectOne("recipeFile.getFileLastNo",
-				recipeNo);
-	}
-
-	/**
 	 * 메인에 들어갈 레시피의 마지막 사진 주소
 	 */
 	@Override
-	public String getFileLastNamePath(String fileLastNo) {
+	public String getFileLastNamePath(String recipeNo) {
 		return sqlSessionTemplate.selectOne("recipeFile.getFileLastNamePath",
-				fileLastNo);
+				recipeNo);
 	}
 
 	/**

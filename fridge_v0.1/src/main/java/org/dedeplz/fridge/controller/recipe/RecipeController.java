@@ -64,43 +64,16 @@ public class RecipeController {
 	public ModelAndView home() {
 		//전체 레시피 리스트
 		List<String> recipeNoList = recipeService.getAllRecipeNo();
-		List<HashMap<String,Object>> fileLastNamePath = new ArrayList<HashMap<String,Object>>();
-		for (int i = 0; i < recipeNoList.size(); i++) {
-			String fileLastNo = recipeService.getFileLastNo(recipeNoList.get(i));
-			String fileLastPath = recipeService.getFileLastNamePath(fileLastNo);
-			 RecipeVO rvo=recipeService.getRecipeInfoNoHits(Integer.parseInt(recipeNoList.get(i)));
-			 String tag=recipeService.getItemTag(Integer.parseInt(recipeNoList.get(i)));
-			 int goodPoint = recipeService.getTotalGood(Integer.parseInt(recipeNoList.get(i)));
-			 HashMap<String, Object> map=new HashMap<String, Object>();
-	         map.put("rvo",rvo);
-	         map.put("fileLastPath", fileLastPath);
-	         map.put("tag", tag);
-	         map.put("goodPoint",goodPoint);
-	         fileLastNamePath.add(map);
-		}
-		//탑 3 레시피 리스트
-				List<String> topRecipeNoList = recipeService.getTopPointRecipeList();
-				System.out.println("탑 목록" + topRecipeNoList);
-				List<HashMap<String,Object>> topFileLastNamePath = new ArrayList<HashMap<String,Object>>();
-				for (int i = 0; i < topRecipeNoList.size(); i++) {
-					String fileLastNo = recipeService.getFileLastNo(topRecipeNoList.get(i));
-					String fileLastPath = recipeService.getFileLastNamePath(fileLastNo);
-					 RecipeVO rvo=recipeService.getRecipeInfoNoHits(Integer.parseInt(topRecipeNoList.get(i)));
-					 String tag=recipeService.getItemTag(Integer.parseInt(topRecipeNoList.get(i)));
-					 int goodPoint = recipeService.getTotalGood(Integer.parseInt(topRecipeNoList.get(i)));
-					 HashMap<String, Object> map=new HashMap<String, Object>();
-			         map.put("rvo",rvo);
-			         map.put("fileLastPath", fileLastPath);
-			         map.put("tag", tag);
-			         map.put("goodPoint",goodPoint);
-			         topFileLastNamePath.add(map);
-				}
-				Map<String, Object> resultMap = new HashMap<String, Object>();
-				resultMap.put("recipeNoList", recipeNoList.size());
-				resultMap.put("filePath",fileLastNamePath);
-				resultMap.put("topFileInfo", topFileLastNamePath);
-				return new ModelAndView("home", "total", resultMap);
+		List<HashMap<String,Object>> fileLastNamePath=recipeService.getFileLastNamePath();
+		List<HashMap<String,Object>> topFileLastNamePath=recipeService.getTopFileLastNamePath();
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap.put("recipeNoList", recipeNoList.size());
+		resultMap.put("filePath",fileLastNamePath);
+		resultMap.put("topFileInfo", topFileLastNamePath);
+		System.out.println(fileLastNamePath);
+		return new ModelAndView("home", "total", resultMap);
 	}
+	
 	/**
 	 * 레시피 검색
 	 * @param items
@@ -108,26 +81,7 @@ public class RecipeController {
 	 */
     @RequestMapping("searchRecipe.do")
     public ModelAndView searchRecipe(String items){
-        List<String> recipeNoList = recipeService.getRecipeNoByItem(items);
-        List<HashMap<String,Object>> fileLastNamePath = new ArrayList<HashMap<String,Object>>();
-       System.out.println(fileLastNamePath);
-       for (int i = 0; i < recipeNoList.size(); i++) {
-          String fileLastNo = recipeService.getFileLastNo(recipeNoList.get(i));
-          String fileLastPath = recipeService.getFileLastNamePath(fileLastNo);
-           RecipeVO rvo=recipeService.getRecipeInfoNoHits(Integer.parseInt(recipeNoList.get(i)));
-           String tag=recipeService.getItemTag(Integer.parseInt(recipeNoList.get(i)));
-           int goodPoint = recipeService.getTotalGood(Integer.parseInt(recipeNoList.get(i)));
-           HashMap<String, Object> map=new HashMap<String, Object>();
-             map.put("rvo",rvo);
-             map.put("fileLastPath", fileLastPath);
-             map.put("tag", tag);
-             map.put("goodPoint",goodPoint);
-             fileLastNamePath.add(map);
-       }
-       Map<String, Object> resultMap = new HashMap<String, Object>();
-       resultMap.put("recipeNoList", recipeNoList.size());
-       resultMap.put("filePath",fileLastNamePath);
-
+    	Map<String, Object> resultMap=recipeService.getSearchRecipeInfo(items);
        return new ModelAndView("home", "total", resultMap);
      }
 	/**
@@ -140,7 +94,6 @@ public class RecipeController {
 	@RequestMapping("showRecipe.do")
 	@ResponseBody
 	public ModelAndView showContents(FileVO fvo,@CookieValue(value="memberCookie",required=false) String cookieValue,HttpServletResponse response, HttpSession session) {
-		System.out.println("showRecipe");
 		RecipeVO rvo = null;
 		int recipeNo = recipeService.getRecipeNoByPath(fvo.getFilePath());
 		 if(cookieValue==null){//memberCookie cookie 존재하지 않으므로 cookie 생성하고 count 증가 (맨처음)
@@ -157,31 +110,17 @@ public class RecipeController {
 	          rvo=recipeService.getRecipeInfoNoHits(recipeNo);
 	          System.out.println("else 일떄 cookieValue : "+cookieValue);
 	      }   
-		List<String> allFilePath = recipeService.getAllFilePahtByRecipeNo(recipeNo);
-		String tag = recipeService.getItemTag(rvo.getRecipeNo());
-		int totalGood=recipeService.getTotalGood(rvo.getRecipeNo());
-		int totalBad=recipeService.getTotalBad(rvo.getRecipeNo());
-		HashMap<String,Object> map=new HashMap<String, Object>();
-		map.put("memberId", rvo.getMemberId());
-		map.put("recipeNo", rvo.getRecipeNo());
-		Map<String, Object> resultMap = new HashMap<String, Object> ();
-		
+		Map<String, Object> resultMap = recipeService.getShowContentsInfo(recipeNo);
 		MemberVO mvo = (MemberVO) session.getAttribute("mvo");
 		if(mvo != null){
 			HashMap<String,Object> favoriteMap=new HashMap<String, Object>();
-		
 			favoriteMap.put("memberId", mvo.getId());
 			favoriteMap.put("recipeNo", rvo.getRecipeNo());
 			int favoriteInfo = recipeService.getFavoriteRecipe(favoriteMap);
-			System.out.println(favoriteInfo);
-		
 			resultMap.put("favoriteInfo", favoriteInfo);
 		}
 		resultMap.put("rvo", rvo);
-		resultMap.put("tag",tag);
-		resultMap.put("allFilePath", allFilePath.toString());
-		resultMap.put("totalGood", totalGood);
-		resultMap.put("totalBad", totalBad);
+		System.out.println("resultMap:"+resultMap);
 		ModelAndView model = new ModelAndView("jsonView",resultMap);
 		return model;
 	}
@@ -209,11 +148,9 @@ public class RecipeController {
 	@RequestMapping("registerRecipe.do")
 	@Transactional
 	public ModelAndView registerRecipe(RecipeVO rvo, String items) {
-		System.out.println("넘어간다!!");
 		int recipeNo = 0;
 		String contents = rvo.getContents();
 		List<String> list = convertHtmlimg(contents);
-		System.out.println("list:"+list);
 		List<FileVO> fvoList=new ArrayList<FileVO>();
 		for (String imgUrl : list) {
 			FileVO fvo = new FileVO();
@@ -227,7 +164,6 @@ public class RecipeController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println(rvo);
 		return new ModelAndView("redirect:registerResult.do?recipeNo="
 				+ recipeNo);
 	}
@@ -263,17 +199,8 @@ public class RecipeController {
 	public ModelAndView deleteForm(RecipeVO rvo, HttpSession session) {
 		MemberVO mvo = (MemberVO) session.getAttribute("mvo");
 		String id = mvo.getId();
-		List<String> list = recipeService.getFileName(rvo.getRecipeNo());
-		File file = new File(path + "\\" + id);
-		File f[] = file.listFiles();
-		for (int i = 0; i < list.size(); i++) {
-			for (int y = 0; y < f.length; y++) {
-				if (f[y].getName().equals(list.get(i))) {
-					f[y].delete();
-				}
-			}
-		}
-		recipeService.deleteRecipeAll(rvo.getRecipeNo());
+		int recipeNo=rvo.getRecipeNo();
+		recipeService.deleteRecipeAll(id,recipeNo);
 		return home();
 	}
 	/**
@@ -285,13 +212,8 @@ public class RecipeController {
 	@LoginCheck
 	@RequestMapping("updateForm.do")
 	public String updateForm(RecipeVO rvo, Model model) {
-		rvo = recipeService.getRecipeInfoNoHits(rvo.getRecipeNo());
-		String tag = recipeService.getItemTag(rvo.getRecipeNo());
-		List<String> fileNameList = recipeService
-				.getFileName(rvo.getRecipeNo());
-		model.addAttribute("rvo", rvo);
-		model.addAttribute("tag", tag);
-		model.addAttribute("fileNameList", fileNameList);
+		Map<String ,Object> map =recipeService.getUpdateFormInfo(rvo.getRecipeNo());
+		model.addAttribute("updateInfo", map);
 		return "update_recipe";
 	}
 
@@ -313,9 +235,6 @@ public class RecipeController {
 			// 파일명을 받는다 - 일반 원본파일명
 			String oriName = request.getHeader("file-name");
 			oriName = URLDecoder.decode(oriName, "UTF-8");
-			System.out.println("filename :" + oriName);
-			String filename_ext = oriName.substring(oriName.lastIndexOf(".") + 1);
-			filename_ext = filename_ext.toLowerCase();
 			String destPath = path + mvo.getId() + "\\";
 			File file = new File(destPath);
 			if (!file.exists()) {
@@ -424,17 +343,7 @@ public class RecipeController {
 		public void updateGood(MemberVO mvo,RecipeVO rvo,String goodCase){
 			String memberId=mvo.getId();
 			int recipeNo=rvo.getRecipeNo();
-			HashMap<String, Object> map=new HashMap<String, Object>();
-			map.put("memberId", memberId);
-			map.put("recipeNo", recipeNo);
-			if(goodCase.equals("0")){
-				recipeService.insertGood(map);
-				System.out.println("insertGood");
-			}else if(goodCase.equals("1")){
-				recipeService.updateCancleGood(map);
-			}else if(goodCase.equals("2")){
-				recipeService.updateUpGood(map);
-			}
+			recipeService.updateGood(memberId,recipeNo,goodCase);
 		}
 		/**
 		 * 비추천 버튼 클릭 시 비추천 insert 및 update 
@@ -449,17 +358,7 @@ public class RecipeController {
 		public void updateBad(MemberVO mvo,RecipeVO rvo,String badCase){
 			String memberId=mvo.getId();
 			int recipeNo=rvo.getRecipeNo();
-			HashMap<String, Object> map=new HashMap<String, Object>();
-			map.put("memberId", memberId);
-			map.put("recipeNo", recipeNo);
-			if(badCase.equals("0")){
-				recipeService.insertBad(map);
-				System.out.println("insertBad");
-			}else if(badCase.equals("1")){
-				recipeService.updateCancleBad(map);
-			}else if(badCase.equals("2")){
-				recipeService.updateUpBad(map);
-			}
+			recipeService.updateBad(memberId,recipeNo,badCase);
 		}
 		/**
 		 * 추천 비추천 테이블 유무 체크 및
@@ -470,19 +369,10 @@ public class RecipeController {
 		 */
 		@RequestMapping("checkGoodAndBad.do")
 		@ResponseBody
-		public ModelAndView checkGood(MemberVO mvo,RecipeVO rvo){
+		public ModelAndView checkGoodAndBad(MemberVO mvo,RecipeVO rvo){
 			String memberId=mvo.getId();
 			int recipeNo=rvo.getRecipeNo();
-			HashMap<String, Object> map=new HashMap<String, Object>();
-			map.put("memberId", memberId);
-			map.put("recipeNo", recipeNo);
-			int count=recipeService.getGoodAndBadNoCountByRecipeNoAndMemberId(map);
-			int good=recipeService.getGood(map);
-			int bad=recipeService.getBad(map);
-			HashMap<String,Object> goodAndBadResult=new HashMap<String, Object>();
-			goodAndBadResult.put("count", count);
-			goodAndBadResult.put("good",good);
-			goodAndBadResult.put("bad", bad);
+			HashMap<String,Object> goodAndBadResult=recipeService.checkGoodAndBad(memberId,recipeNo);
 			return new ModelAndView("jsonView",goodAndBadResult);
 		}
 		
@@ -493,19 +383,12 @@ public class RecipeController {
 		@RequestMapping(value="registerFavorite.do", method=RequestMethod.POST )
 		@ResponseBody
 		public Object registerFavorite(FavoriteVO fvo, HttpSession session){
-			System.out.println("즐겨찾기 등록");
-			
-			System.out.println(fvo.getRecipeNo());
 			MemberVO mvo = (MemberVO) session.getAttribute("mvo");
-			System.out.println(mvo);
 			if(mvo == null){
 				return "home";
 			}
 			fvo.setMemberId(mvo.getId());
-			System.out.println(fvo);
-			
 			String str = recipeService.registerFavorite(fvo);
-			System.out.println(str);
 			return str;
 		}
 		   /**
@@ -521,8 +404,7 @@ public class RecipeController {
 		         return "home";
 		      }else{
 		         FavoriteListVO lvo = recipeService.getFavoriteRecipeList(pageNo, mvo.getId());
-		         model.addAttribute("lvo", lvo);
-		         
+		         model.addAttribute("lvo", lvo); 
 		      }
 		      return "favoriteList_recipe";
 		   }
@@ -536,10 +418,7 @@ public class RecipeController {
 		   @RequestMapping(value="deleteFavorite.do", method=RequestMethod.POST)
 		   @ResponseBody
 		   public Object deleteFavorite(FavoriteVO fvo, String pageNo){
-		      System.out.println(fvo);
 		      recipeService.deleteFavorite(fvo);
-		      System.out.println(1234);
-		      
 		      return recipeService.getFavoriteRecipeList(pageNo, fvo.getMemberId());
 		   }
 		   
@@ -553,29 +432,9 @@ public class RecipeController {
 			@LoginCheck
 		   @RequestMapping("favoriteView.do")
 		   public String favoriteView(Model model, String pageNo, HttpSession session){
-		      System.out.println("asdf");
 		      MemberVO mvo = (MemberVO) session.getAttribute("mvo");
-		      FavoriteListVO fvo = recipeService.getFavoriteRecipeList(pageNo, mvo.getId());
-		      List<FavoriteVO> fList = fvo.getList();
-		      System.out.println(fList);
-		       List<HashMap<String,Object>> fileLastNamePath = new ArrayList<HashMap<String,Object>>();
-		         for (int i = 0; i < fList.size(); i++) {
-		            String fileLastNo = recipeService.getFileLastNo(Integer.toString(fList.get(i).getRecipeNo()));
-		            System.out.println(fileLastNo);
-		            String fileLastPath = recipeService.getFileLastNamePath(fileLastNo);
-		            System.out.println(fileLastPath);
-		             RecipeVO rvo=recipeService.getRecipeInfo(fList.get(i).getRecipeNo());
-		             System.out.println(rvo);
-		             String tag=recipeService.getItemTag(fList.get(i).getRecipeNo());
-		             System.out.println(tag);
-		             HashMap<String, Object> map=new HashMap<String, Object>();
-		               map.put("rvo",rvo);
-		               map.put("fileLastPath", fileLastPath);
-		               map.put("tag", tag);
-		               fileLastNamePath.add(map);
-		         }
+		      List<HashMap<String,Object>> fileLastNamePath=recipeService.getFavoriteInfo(pageNo,mvo);
 		      model.addAttribute("fileLastNamePath",fileLastNamePath);
-		      
 		      return "favoriteView_recipe";
 		   }
 		   

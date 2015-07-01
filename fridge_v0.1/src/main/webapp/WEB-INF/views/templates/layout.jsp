@@ -120,6 +120,7 @@ img#badImg {
    var idchecked=false;
    var totalGood;
    var totalbad;
+   var nickchecked=false;
    $(document).ready(function(){
       $("#findMyId").click(function() {   
             $.ajax({
@@ -190,21 +191,22 @@ img#badImg {
                checkResultNick="";
                return;
             }
-            
             $.ajax({
-               type:"POST",
-               url:"member_memberNickCheck.do",
-               data:"nick="+nick,   
-               success:function(data){                  
-                  if(data=="fail"){
-                  $("#nickCheckView").html(nick+"는(은) 사용하실 수 없습니다.");
-                     checkResultNick="";
-                  }else{                  
-                     $("#nickCheckView").html(nick+"는(은) 사용가능합니다.");      
-                     checkResultNick=nick;
-                  }               
-               }//callback         
-            });//ajax
+                type:"POST",
+                url:"member_memberNickCheck.do",
+                data:"nick="+nick,   
+                success:function(data){                  
+                   if(data=="fail"){
+                   $("#nickCheckView").html(nick+"는(은) 사용하실 수 없습니다.");
+                   nickchecked=false;
+                      checkResultNick="";
+                   }else{                  
+                      $("#nickCheckView").html(nick+"는(은) 사용가능합니다."); 
+                      nickchecked=true;
+                      checkResultNick=nick;
+                   }               
+                }//callback         
+             });//ajax
          });//keyup
          
          

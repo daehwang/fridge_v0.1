@@ -2,7 +2,6 @@ package org.dedeplz.fridge.controller.board;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -64,7 +63,6 @@ public class BoardController {
 	@RequestMapping("registerBoard.do")
 	public ModelAndView registerBoard(BoardVO bvo, String items) {
 		int boardNo = 0;
-		String pageNo = null;
 		String contents = bvo.getContents();
 		List<String> list = convertHtmlimg(contents);
 		List<FileVO> fvoList=new ArrayList<FileVO>();

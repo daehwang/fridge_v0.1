@@ -10,17 +10,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="recipeNo" column="recipe_no"/>
 		<result property="filePath" column="file_path"/>
 	</resultMap>
-	<select id="getFilePath" resultType="string">
- 		select file_path from recipe_file where recipe_no=#{value} order by file_no asc
- 	</select>  
  	<delete id="deleteRecipeFile">
  		delete recipe_file where recipe_no=#{value}
  	</delete>
- 	  <select id="getFileLastNo" resultType="string">
-   		select max(file_no) from recipe_file where recipe_no=#{value}
-   </select>
    <select id="getFileLastNamePath" resultType="string">
-   	select file_path from recipe_file where file_no=#{value}
+   	select file_path from recipe_file where file_no=(select max(file_no) from recipe_file where recipe_no=#{value})
    	</select>
    	<select id="getRecipeNoByPath" resultType="int">
    		select recipe_no from recipe_file where file_path=#{value}

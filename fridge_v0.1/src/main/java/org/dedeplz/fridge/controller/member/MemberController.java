@@ -254,7 +254,7 @@ public class MemberController {
          } else{
             List<Integer> list=recipeService.getMyRecipeList(mvo.getId());
             for(int i=0;i<list.size();i++){
-               recipeService.deleteRecipeAll(list.get(i));
+               recipeService.deleteRecipeAll(mvo.getId(),list.get(i));
             }
             memberService.deleteMember(mvo);
          }

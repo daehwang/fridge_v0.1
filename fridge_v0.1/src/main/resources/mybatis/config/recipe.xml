@@ -68,7 +68,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       delete recipe_item where recipe_no = #{value}
    </delete>
    <select id="getAllRecipeNo" resultType="string">
-   		select recipe_no from recipe
+   		select recipe_no from recipe order by recipe_no desc
    </select>
   <update id="updateRecipe" parameterType="rvo" >
       update recipe set title=#{title},contents=#{contents},cooking_time=#{cookingTime} where recipe_no=#{recipeNo}
